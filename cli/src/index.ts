@@ -10,6 +10,8 @@ import { reindexCommand } from './commands/reindex.js'
 import { rmCommand } from './commands/rm.js'
 import { listCommand } from './commands/list.js'
 import { deprecateCommand } from './commands/deprecate.js'
+import { checkCommand } from './commands/check.js'
+import { renameCommand } from './commands/rename.js'
 
 const program = new Command()
   .name('lore')
@@ -25,5 +27,7 @@ program.addCommand(reindexCommand)
 program.addCommand(rmCommand)
 program.addCommand(listCommand)
 program.addCommand(deprecateCommand)
+program.addCommand(checkCommand)
+program.addCommand(renameCommand)
 
 program.parse()

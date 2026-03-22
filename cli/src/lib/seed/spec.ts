@@ -140,10 +140,11 @@ When implementing a feature, collect its invariants, rules, flows, and contracts
 
 ## Principles
 
-1. **Minimal but complete.** Don't define what you don't need yet.
-2. **The spec grows through use.** Let implementation pressure reveal what's needed.
-3. **Invariants over comments.** The spec is the source of truth, not code comments.
-4. **One qualified id, one file, one meaning.** No ambiguity. IDs are unique per type, qualified with a prefix.
-5. **The graph is the value.** Links enable impact analysis and completeness checking.
-6. **Exists means active.** No status lifecycle. \`deprecated: true\` is the only flag.
+1. **Spec before code — no exceptions.** Every change to behavior must start with updating or creating the relevant spec primitives. Propose the changes, get explicit user confirmation, write the primitives, THEN implement. This is the golden rule. Skipping it means the spec drifts, effort gets wasted on things the user may disagree with, and incorrect changes may slip past unnoticed.
+2. **Minimal but complete.** Don't define what you don't need yet.
+3. **The spec grows through use.** Let implementation pressure reveal what's needed.
+4. **Invariants over comments.** The spec is the source of truth, not code comments.
+5. **One qualified id, one file, one meaning.** No ambiguity. IDs are unique per type, qualified with a prefix.
+6. **The graph is the value.** Links enable impact analysis and completeness checking.
+7. **Exists means active.** No status lifecycle. \`deprecated: true\` is the only flag.
 `

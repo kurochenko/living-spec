@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, unlinkSync } from 'fs'
-import { join } from 'path'
+import { join, dirname } from 'path'
 import matter from 'gray-matter'
 import { PRIMITIVE_TYPES, TYPE_TO_FOLDER, type PrimitiveType, type EdgeType } from './constants.js'
 import { specDir } from './spec-root.js'
@@ -106,4 +106,33 @@ export const setDeprecated = (primitive: Primitive): void => {
   const { data, content } = matter(raw)
   data.deprecated = true
   writeFileSync(primitive.filePath, matter.stringify(content, data))
+}
+
+export const renamePrimitive = (primitive: Primitive, newSlug: string): string => {
+  const raw = readFileSync(primitive.filePath, 'utf-8')
+  const { data, content } = matter(raw)
+  data.id = newSlug
+  const newPath = join(dirname(primitive.filePath), `${newSlug}.md`)
+  writeFileSync(newPath, matter.stringify(content, data))
+  unlinkSync(primitive.filePath)
+  return newPath
+}
+
+export const rewriteLinkTargets = (projectRoot: string, oldRef: string, newRef: string): number => {
+  const all = getAllPrimitives(projectRoot)
+  let count = 0
+  for (const p of all) {
+    const matches = p.frontmatter.links.filter((l) => l.target === oldRef)
+    if (matches.length === 0) continue
+    const raw = readFileSync(p.filePath, 'utf-8')
+    const { data, content } = matter(raw)
+    for (const link of data.links as { edge: string, target: string }[]) {
+      if (link.target === oldRef) {
+        link.target = newRef
+        count++
+      }
+    }
+    writeFileSync(p.filePath, matter.stringify(content, data))
+  }
+  return count
 }

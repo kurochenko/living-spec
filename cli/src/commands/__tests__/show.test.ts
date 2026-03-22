@@ -1,7 +1,5 @@
 import { describe, it, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, writeFileSync } from 'fs'
-import { join } from 'path'
 import { createTempDir, removeTempDir, run } from '../../lib/test-helpers.js'
 
 let dir: string
@@ -33,13 +31,8 @@ describe('flow:show-primitive', () => {
   })
 
   it('--related returns connected subgraph', () => {
-    // Add a flow that depends on alpha — so they're connected
     run(['add', 'flow', 'use-alpha', '-n', 'Use Alpha', '-b', 'A flow.'], dir)
-    // Manually add a link by editing the file
-    const flowPath = join(dir, '.spec', 'flows', 'use-alpha.md')
-    let content = readFileSync(flowPath, 'utf-8')
-    content = content.replace('links: []', 'links:\n  - edge: depends-on\n    target: term:alpha')
-    writeFileSync(flowPath, content)
+    run(['link', 'flow:use-alpha', 'depends-on', 'term:alpha'], dir)
 
     const r = run(['show', 'term:alpha', '--related'], dir)
     assert.equal(r.exitCode, 0)

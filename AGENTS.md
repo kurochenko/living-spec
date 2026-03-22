@@ -8,11 +8,16 @@ Living Spec — a CLI tool and framework for maintaining structured domain knowl
 
 This project uses its own living spec — initialized at the repo root.
 
+**GOLDEN RULE: Spec before code — no exceptions.** Every change to behavior must start with creating or updating the relevant spec primitives. Propose the spec changes, get explicit user confirmation, write the primitives, THEN implement. This is non-negotiable. Skipping it has three consequences: the spec drifts from reality and loses all value; you may implement something the user disagrees with, wasting effort that must be redone; and worst, incorrect changes may slip past the user's attention entirely.
+
 Before implementing any feature:
 1. Read `.spec/SPEC.md` for the full meta-model and instructions
 2. Read `.spec/INDEX.md` for the current graph of all defined primitives
 3. Identify the Feature you're implementing and traverse its dependencies
 4. If any referenced primitive is missing or incomplete — stop and ask, do not guess
+5. Propose spec updates (new/changed primitives) and wait for confirmation
+6. Write the spec primitives
+7. Only then implement the code
 
 When you discover domain knowledge that isn't captured in the spec, propose a new primitive to the user. Write it only after confirmation. Always update INDEX.md when adding or changing primitives.
 
@@ -38,7 +43,8 @@ lore rm <prefix:slug> [--force]    # delete a primitive (checks for dangling ref
 lore list [--type <type>]          # list all primitives
 lore deprecate <prefix:slug>       # mark a primitive as deprecated
 lore reindex                       # rebuild INDEX.md from disk
-lore check <prefix:slug>           # completeness check on a feature (planned)
+lore rename <prefix:slug> <new-slug> # rename a primitive, rewrite all inbound refs
+lore check <prefix:slug>           # completeness check — reports dead refs and deprecated
 ```
 
 IDs use qualified form `prefix:slug` in links and references. Prefixes: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Uniqueness is scoped per type — two different types can share the same slug.

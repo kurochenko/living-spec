@@ -183,9 +183,10 @@ The file `.spec/INDEX.md` is an auto-maintained flat list of all primitives and 
 
 ## Principles
 
-1. **Minimal but complete.** Don't define what you don't need yet. But what you define must be complete enough to implement against without guessing.
-2. **The spec grows through use.** Don't populate it proactively. Let implementation pressure reveal what's needed.
-3. **Invariants over comments.** If a rule must always hold, put it in an Invariant file — not in a code comment. Code comments get stale. The spec is the source of truth.
-4. **One qualified id, one file, one meaning.** No ambiguity. IDs are unique per type, qualified with a prefix (`term:ltv`, `flow:originate-loan`). If two contexts use the same word differently, they are two Terms with a `maps-to` edge.
-5. **The graph is the value.** Prose definitions are necessary but not sufficient. The links between primitives are what enable impact analysis, completeness checking, and gap detection.
-6. **Exists means active.** No status lifecycle. If a file is in the spec, it's live. If it's no longer relevant, mark it `deprecated: true`. That's the only flag.
+1. **Spec before code — no exceptions.** Every change to behavior must start with updating or creating the relevant spec primitives. Propose the changes, get explicit user confirmation, write the primitives, THEN implement. This is the golden rule. Skipping it has three consequences: the spec drifts from reality and loses all value; you may implement something the user disagrees with, wasting effort that must be redone; and worst, incorrect changes may slip past the user's attention entirely. Never write implementation code before the spec is confirmed.
+2. **Minimal but complete.** Don't define what you don't need yet. But what you define must be complete enough to implement against without guessing.
+3. **The spec grows through use.** Don't populate it proactively. Let implementation pressure reveal what's needed.
+4. **Invariants over comments.** If a rule must always hold, put it in an Invariant file — not in a code comment. Code comments get stale. The spec is the source of truth.
+5. **One qualified id, one file, one meaning.** No ambiguity. IDs are unique per type, qualified with a prefix (`term:ltv`, `flow:originate-loan`). If two contexts use the same word differently, they are two Terms with a `maps-to` edge.
+6. **The graph is the value.** Prose definitions are necessary but not sufficient. The links between primitives are what enable impact analysis, completeness checking, and gap detection.
+7. **Exists means active.** No status lifecycle. If a file is in the spec, it's live. If it's no longer relevant, mark it `deprecated: true`. That's the only flag.
