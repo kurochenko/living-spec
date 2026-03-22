@@ -23,6 +23,7 @@ When you discover domain knowledge that isn't captured in the spec, propose a ne
 - `commander` for CLI arg parsing and subcommands
 - `gray-matter` for frontmatter parsing/writing
 - `fs/path` for file I/O (Node built-in)
+- `bun` as package manager and script runner (`bun install`, `bun run test`) — Node.js stays as runtime
 - Keep dependencies minimal — these three are the full runtime stack
 
 ## Commands
