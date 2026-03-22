@@ -50,3 +50,5 @@ Every write command rebuilds INDEX.md automatically.
 - Validate edge types against allowed source→target pairs
 - Exit with clear error messages on invalid input — never silently succeed
 - Tests use the built-in Node.js test runner
+- Tests live in colocated `__tests__/` folders next to the source they test (e.g., `src/commands/__tests__/add.test.ts`)
+- Shared test utilities live in `src/lib/` (e.g., `test-helpers.ts`) — not in `__tests__/`

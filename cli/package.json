@@ -8,8 +8,9 @@
   },
   "scripts": {
     "build": "tsc",
+    "build:test": "tsc -p tsconfig.test.json",
     "dev": "tsc --watch",
-    "test": "node --test --loader ts-node/esm src/**/*.test.ts"
+    "test": "npm run build:test && node --test dist/commands/__tests__/*.test.js"
   },
   "dependencies": {
     "commander": "^13.0.0",
@@ -17,8 +18,7 @@
   },
   "devDependencies": {
     "typescript": "^5.7.0",
-    "@types/node": "^22.0.0",
-    "ts-node": "^10.9.0"
+    "@types/node": "^22.0.0"
   },
   "engines": {
     "node": ">=20"
