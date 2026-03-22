@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 import { PRIMITIVE_TYPES, TYPE_TO_FOLDER, type PrimitiveType, type EdgeType } from './constants.js'
@@ -65,4 +65,25 @@ export const findPrimitiveById = (projectRoot: string, ref: string): Primitive |
   if (!qualified) return null
 
   return all.find((p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug) ?? null
+}
+
+export const addLink = (primitive: Primitive, edge: EdgeType, target: string): void => {
+  const raw = readFileSync(primitive.filePath, 'utf-8')
+  const { data, content } = matter(raw)
+  const links: Link[] = data.links ?? []
+  links.push({ edge, target })
+  data.links = links
+  writeFileSync(primitive.filePath, matter.stringify(content, data))
+}
+
+export const removeLink = (primitive: Primitive, edge: EdgeType, target: string): boolean => {
+  const raw = readFileSync(primitive.filePath, 'utf-8')
+  const { data, content } = matter(raw)
+  const links: Link[] = data.links ?? []
+  const idx = links.findIndex((l) => l.edge === edge && l.target === target)
+  if (idx === -1) return false
+  links.splice(idx, 1)
+  data.links = links
+  writeFileSync(primitive.filePath, matter.stringify(content, data))
+  return true
 }

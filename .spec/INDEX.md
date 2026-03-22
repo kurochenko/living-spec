@@ -16,6 +16,7 @@ Rebuilt automatically by the lore CLI on every write command.
 
 - inv:single-spec-per-project (lore) → constrains: term:spec-root
 - inv:unique-primitive-id (lore) → constrains: term:primitive
+- inv:valid-edge-types (lore) → constrains: term:primitive
 
 ## Rules
 
@@ -29,7 +30,9 @@ Rebuilt automatically by the lore CLI on every write command.
 
 - flow:add-primitive (lore) → depends-on: term:primitive, term:primitive-type, inv:unique-primitive-id, dec:index-rebuild-on-write
 - flow:init-spec (lore) → depends-on: term:spec-root, term:primitive-type
+- flow:link-primitives (lore) → depends-on: term:primitive, inv:valid-edge-types, dec:index-rebuild-on-write
 - flow:show-primitive (lore) → depends-on: term:primitive, term:index, dec:bidirectional-subgraph-traversal
+- flow:unlink-primitives (lore) → depends-on: term:primitive, dec:index-rebuild-on-write
 
 ## Contracts
 
@@ -47,4 +50,5 @@ Rebuilt automatically by the lore CLI on every write command.
 
 - feat:cli-add (lore) → includes: term:primitive, term:primitive-type, term:index, inv:unique-primitive-id, flow:add-primitive, dec:index-rebuild-on-write
 - feat:cli-init (lore) → includes: term:spec-root, term:primitive, term:primitive-type, term:index, inv:single-spec-per-project, flow:init-spec, dec:primitives-inside-spec, dec:auto-detect-spec-root
+- feat:cli-link (lore) → includes: term:primitive, term:index, inv:valid-edge-types, flow:link-primitives, flow:unlink-primitives, dec:index-rebuild-on-write
 - feat:cli-show (lore) → includes: term:primitive, term:index, flow:show-primitive, dec:bidirectional-subgraph-traversal

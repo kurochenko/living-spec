@@ -1,4 +1,4 @@
-import { PRIMITIVE_TYPES, PREFIX_TO_TYPE, TYPE_TO_PREFIX, type PrimitiveType } from './constants.js'
+import { PRIMITIVE_TYPES, EDGE_TYPES, PREFIX_TO_TYPE, TYPE_TO_PREFIX, type PrimitiveType, type EdgeType } from './constants.js'
 
 const KEBAB_CASE_RE = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
 
@@ -44,3 +44,23 @@ export const parseQualifiedRef = (ref: string): QualifiedRef | null => {
 
 export const qualifyId = (type: PrimitiveType, slug: string): string =>
   `${TYPE_TO_PREFIX[type]}:${slug}`
+
+export const isValidEdgeType = (edge: string): edge is EdgeType =>
+  (EDGE_TYPES as readonly string[]).includes(edge)
+
+export const validateEdgeType = (edge: string): EdgeType => {
+  if (!isValidEdgeType(edge)) {
+    console.error(`Invalid edge type '${edge}'. Must be one of: ${EDGE_TYPES.join(', ')}.`)
+    process.exit(1)
+  }
+  return edge
+}
+
+export const requireQualifiedRef = (ref: string, label: string): QualifiedRef => {
+  const parsed = parseQualifiedRef(ref)
+  if (!parsed) {
+    console.error(`${label}: Use qualified form prefix:slug. E.g., term:my-term.`)
+    process.exit(1)
+  }
+  return parsed
+}
