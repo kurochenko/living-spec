@@ -23,8 +23,6 @@ tags: [cli]
 - `--name, -n` (required) — human-readable name
 - `--body, -b` (required for inline) — prose body text
 - `--body-file` (required for multi-line) — path to file containing body text. Mutually exclusive with `--body`.
-- `--context, -c` (optional) — bounded context name, defaults to empty
-
 **Steps:**
 1. Validate type is one of the eight allowed primitive types → exit with error if not
 2. Validate slug matches kebab-case pattern → exit with error if not
@@ -33,7 +31,7 @@ tags: [cli]
 5. Find project root (walk up for `.spec/SPEC.md`)
 6. Scan existing primitives of the same type for duplicate slug → exit with error showing existing path if found
 7. If `--body-file`, read body from file → exit with error if file not found
-8. Build file with YAML frontmatter (type, name, id, context, links: [], tags: []) and body
+8. Build file with YAML frontmatter (type, name, id, links: [], tags: []) and body
 9. Write file to `.spec/{type}s/{slug}.md`
 10. Rebuild INDEX.md
 11. Print confirmation: `Created prefix:slug at .spec/{type}s/{slug}.md`

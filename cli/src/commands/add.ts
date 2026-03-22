@@ -12,14 +12,12 @@ const buildPrimitiveFile = (
   type: PrimitiveType,
   id: string,
   name: string,
-  context: string,
   body: string,
 ): string => {
   const frontmatter: Record<string, unknown> = {
     type,
     name,
     id,
-    context,
     links: [],
     tags: [],
   }
@@ -34,8 +32,7 @@ export const addCommand = new Command('add')
   .requiredOption('-n, --name <name>', 'Human-readable name')
   .option('-b, --body <body>', 'Prose body text (inline)')
   .option('--body-file <path>', 'Path to file containing body text')
-  .option('-c, --context <context>', 'Bounded context name', '')
-  .action((typeArg: string, slugArg: string, opts: { context: string, name: string, body?: string, bodyFile?: string }) => {
+  .action((typeArg: string, slugArg: string, opts: { name: string, body?: string, bodyFile?: string }) => {
     const type = validateType(typeArg)
     const slug = validateId(slugArg)
     const projectRoot = requireProjectRoot()
@@ -71,7 +68,7 @@ export const addCommand = new Command('add')
     const folder = TYPE_TO_FOLDER[type]
     const filePath = join(spec, folder, `${slug}.md`)
 
-    const content = buildPrimitiveFile(type, slug, opts.name, opts.context, body)
+    const content = buildPrimitiveFile(type, slug, opts.name, body)
     writeFileSync(filePath, content)
 
     rebuildIndex(projectRoot)

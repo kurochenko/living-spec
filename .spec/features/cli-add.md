@@ -24,7 +24,6 @@ tags: [cli, v0.1]
 **Acceptance criteria:**
 - `lore add term my-term -n "My Term" -b "Definition here"` creates `.spec/terms/my-term.md` with correct frontmatter and body
 - `--body-file <path>` reads body from file (for multi-line content)
-- `--context` populates the context field
 - Missing `-n` exits with error requiring name
 - Missing `-b` / `--body-file` exits with error requiring body
 - Invalid type exits with error listing valid types
