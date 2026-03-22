@@ -1,0 +1,27 @@
+{
+  "name": "@kurochenko/lore",
+  "version": "0.1.0",
+  "description": "Drop-in knowledge base that tells your LLM what's true about your project before it writes code.",
+  "type": "module",
+  "bin": {
+    "lore": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node --test --loader ts-node/esm src/**/*.test.ts"
+  },
+  "dependencies": {
+    "commander": "^13.0.0",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

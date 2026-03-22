@@ -6,11 +6,11 @@ Living Spec — a CLI tool and framework for maintaining structured domain knowl
 
 ## Living Spec
 
-This project uses its own living spec — a structured knowledge base in `living-spec/`.
+This project uses its own living spec — initialized at the repo root.
 
 Before implementing any feature:
-1. Read `living-spec/.spec/SPEC.md` for the full meta-model and instructions
-2. Read `living-spec/.spec/INDEX.md` for the current graph of all defined primitives
+1. Read `.spec/SPEC.md` for the full meta-model and instructions
+2. Read `.spec/INDEX.md` for the current graph of all defined primitives
 3. Identify the Feature you're implementing and traverse its dependencies
 4. If any referenced primitive is missing or incomplete — stop and ask, do not guess
 
@@ -19,7 +19,7 @@ When you discover domain knowledge that isn't captured in the spec, propose a ne
 ## Tech stack
 
 - TypeScript (strict mode, ESM)
-- Node.js CLI — single entry point, subcommand pattern (e.g., `living-spec add term ...`)
+- Node.js CLI — single entry point, subcommand pattern (e.g., `lore add term ...`)
 - `commander` for CLI arg parsing and subcommands
 - `gray-matter` for frontmatter parsing/writing
 - `fs/path` for file I/O (Node built-in)
@@ -28,15 +28,17 @@ When you discover domain knowledge that isn't captured in the spec, propose a ne
 ## Commands
 
 ```
-living-spec add <type> <id> [options]     # create a new primitive from template
-living-spec link <source> <edge> <target> # add a typed edge between two primitives
-living-spec unlink <source> <edge> <target>
-living-spec deprecate <id>
-living-spec update <id>                   # update the body of an existing primitive
-living-spec check <feature-id>            # completeness check on a feature
-living-spec show <id> [--related]         # read a primitive or its subgraph
-living-spec list [--type] [--context]     # list all primitives
+lore init [--dir <path>]           # create .spec/ in target directory
+lore add <type> <slug> [options]   # create a new primitive from template
+lore show <prefix:slug> [--related]  # read a primitive or its subgraph
+lore link <source> <edge> <target> # add a typed edge between two primitives
+lore unlink <source> <edge> <target>
+lore deprecate <prefix:slug>
+lore check <prefix:slug>           # completeness check on a feature
+lore list [--type] [--context]     # list all primitives
 ```
+
+IDs use qualified form `prefix:slug` in links and references. Prefixes: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Uniqueness is scoped per type — two different types can share the same slug.
 
 Every write command rebuilds INDEX.md automatically.
 
