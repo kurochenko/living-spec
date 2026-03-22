@@ -75,6 +75,7 @@ There is no status lifecycle. If a file exists, it's active. The only flag is \`
 
 - **id** (slug): kebab-case, unique within its type
 - **qualified id**: \`prefix:slug\`. Prefixes: \`term\`, \`inv\`, \`rule\`, \`evt\`, \`flow\`, \`con\`, \`dec\`, \`feat\`
+- **type input**: CLI commands accept both the full type name (\`feature\`) and the prefix (\`feat\`). Frontmatter always stores the full name.
 - **filename**: \`{slug}.md\` inside the type folder
 - **target** in links: always the qualified id. E.g., \`target: term:ltv\`
 

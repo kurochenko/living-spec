@@ -5,15 +5,24 @@ const KEBAB_CASE_RE = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/
 export const isValidType = (type: string): type is PrimitiveType =>
   (PRIMITIVE_TYPES as readonly string[]).includes(type)
 
+export const resolveType = (input: string): PrimitiveType | null => {
+  if (isValidType(input)) return input
+  const fromPrefix = PREFIX_TO_TYPE[input]
+  if (fromPrefix) return fromPrefix
+  return null
+}
+
 export const isValidId = (id: string): boolean =>
   KEBAB_CASE_RE.test(id)
 
 export const validateType = (type: string): PrimitiveType => {
-  if (!isValidType(type)) {
-    console.error(`Invalid type '${type}'. Must be one of: ${PRIMITIVE_TYPES.join(', ')}.`)
+  const resolved = resolveType(type)
+  if (!resolved) {
+    const prefixes = Object.keys(PREFIX_TO_TYPE).join(', ')
+    console.error(`Invalid type '${type}'. Must be one of: ${PRIMITIVE_TYPES.join(', ')} (or prefix: ${prefixes}).`)
     process.exit(1)
   }
-  return type
+  return resolved
 }
 
 export const validateId = (id: string): string => {

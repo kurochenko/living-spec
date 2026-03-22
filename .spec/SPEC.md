@@ -81,6 +81,7 @@ Do not delete primitive files. Deprecate them instead. Deleting breaks link refe
 
 - **id** (slug): kebab-case, unique within its type. E.g., `ltv`, `loan-approved`, `max-residential-ltv`
 - **qualified id**: `prefix:slug`. Each type has a short prefix: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. E.g., `term:ltv`, `evt:loan-approved`, `rule:max-residential-ltv`
+- **type input**: CLI commands that accept a type accept both the full name (`feature`) and the prefix (`feat`). Frontmatter always stores the full name — prefix resolution is input-only.
 - **filename**: `{slug}.md` inside the type folder. E.g., `.spec/terms/ltv.md`, `.spec/events/loan-approved.md`
 - **target** in links: always the qualified id of the target primitive. E.g., `target: term:ltv`
 

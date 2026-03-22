@@ -1,9 +1,9 @@
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'fs'
+import { readFileSync, writeFileSync, readdirSync, existsSync, unlinkSync } from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 import { PRIMITIVE_TYPES, TYPE_TO_FOLDER, type PrimitiveType, type EdgeType } from './constants.js'
 import { specDir } from './spec-root.js'
-import { parseQualifiedRef } from './validation.js'
+import { parseQualifiedRef, qualifyId } from './validation.js'
 
 export interface Link {
   edge: EdgeType
@@ -86,4 +86,24 @@ export const removeLink = (primitive: Primitive, edge: EdgeType, target: string)
   data.links = links
   writeFileSync(primitive.filePath, matter.stringify(content, data))
   return true
+}
+
+export const findInboundReferences = (projectRoot: string, ref: string): Primitive[] => {
+  const all = getAllPrimitives(projectRoot)
+  return all.filter((p) => {
+    const qid = qualifyId(p.frontmatter.type, p.frontmatter.id)
+    if (qid === ref) return false
+    return p.frontmatter.links.some((l) => l.target === ref)
+  })
+}
+
+export const removePrimitive = (primitive: Primitive): void => {
+  unlinkSync(primitive.filePath)
+}
+
+export const setDeprecated = (primitive: Primitive): void => {
+  const raw = readFileSync(primitive.filePath, 'utf-8')
+  const { data, content } = matter(raw)
+  data.deprecated = true
+  writeFileSync(primitive.filePath, matter.stringify(content, data))
 }

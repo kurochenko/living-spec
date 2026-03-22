@@ -34,12 +34,16 @@ lore add <type> <slug> [options]   # create a new primitive from template
 lore show <prefix:slug> [--related]  # read a primitive or its subgraph
 lore link <source> <edge> <target> # add a typed edge between two primitives
 lore unlink <source> <edge> <target>
-lore deprecate <prefix:slug>
-lore check <prefix:slug>           # completeness check on a feature
-lore list [--type] [--context]     # list all primitives
+lore rm <prefix:slug> [--force]    # delete a primitive (checks for dangling refs)
+lore list [--type <type>]          # list all primitives
+lore deprecate <prefix:slug>       # mark a primitive as deprecated
+lore reindex                       # rebuild INDEX.md from disk
+lore check <prefix:slug>           # completeness check on a feature (planned)
 ```
 
 IDs use qualified form `prefix:slug` in links and references. Prefixes: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Uniqueness is scoped per type — two different types can share the same slug.
+
+Anywhere a command takes a type as input, both the full name (`feature`) and the prefix (`feat`) are accepted. Frontmatter always stores the full name.
 
 Every write command rebuilds INDEX.md automatically.
 

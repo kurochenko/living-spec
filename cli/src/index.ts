@@ -6,6 +6,10 @@ import { addCommand } from './commands/add.js'
 import { showCommand } from './commands/show.js'
 import { linkCommand } from './commands/link.js'
 import { unlinkCommand } from './commands/unlink.js'
+import { reindexCommand } from './commands/reindex.js'
+import { rmCommand } from './commands/rm.js'
+import { listCommand } from './commands/list.js'
+import { deprecateCommand } from './commands/deprecate.js'
 
 const program = new Command()
   .name('lore')
@@ -17,5 +21,9 @@ program.addCommand(addCommand)
 program.addCommand(showCommand)
 program.addCommand(linkCommand)
 program.addCommand(unlinkCommand)
+program.addCommand(reindexCommand)
+program.addCommand(rmCommand)
+program.addCommand(listCommand)
+program.addCommand(deprecateCommand)
 
 program.parse()
