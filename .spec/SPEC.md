@@ -142,6 +142,24 @@ If you're plugging this spec into a project that already has code:
 4. As you work on more features, the spec grows naturally
 5. Each session should leave the spec slightly more complete than it found it
 
+### Deriving tests from the spec
+
+Four primitive types are testable — their files tell you exactly what to test:
+
+**Invariants** → unit tests. The file declares a condition and a violation outcome. Write one test asserting the condition holds and one asserting the violation path behaves correctly.
+
+**Rules** → unit tests. Same as invariants, but rules are parameterized. Test the default behavior and boundary values of each parameter.
+
+**Flows** → happy path + error path tests. The file lists steps (the happy path) and error paths (the edge cases). Each step is a test assertion, each error path is a test case.
+
+**Contracts** → integration or contract tests. The file declares what we send, what we receive, and failure modes. Test that the shape matches and failures are handled.
+
+Four types produce no dedicated tests:
+
+**Terms** — definitions, nothing to execute. **Decisions** — rationale, tested implicitly through the code they shaped. **Events** — tested through the flows that emit and trigger them. **Features** — rollups, tested by testing their constituent primitives.
+
+When implementing a feature, collect its invariants, rules, flows, and contracts. These are your test cases.
+
 ### Querying the spec
 
 Three query patterns:

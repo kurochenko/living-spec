@@ -41,6 +41,7 @@ Rebuilt automatically by the lore CLI on every write command.
 - dec:bidirectional-subgraph-traversal (lore) → depends-on: term:index, term:primitive
 - dec:index-rebuild-on-write (lore) → depends-on: term:index
 - dec:primitives-inside-spec (lore) → depends-on: term:spec-root
+- dec:testable-primitives (lore) → depends-on: term:primitive-type
 
 ## Features
 
