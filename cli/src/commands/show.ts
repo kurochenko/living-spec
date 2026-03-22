@@ -1,7 +1,7 @@
 import { Command } from 'commander'
 import { requireProjectRoot } from '../lib/spec-root.js'
-import { getAllPrimitives, findAllPrimitivesById, type Primitive } from '../lib/primitives.js'
-import { qualifyId } from '../lib/validation.js'
+import { getAllPrimitives, findPrimitiveById, type Primitive } from '../lib/primitives.js'
+import { qualifyId, parseQualifiedRef } from '../lib/validation.js'
 import { type PrimitiveType } from '../lib/constants.js'
 
 const formatLinks = (links: Primitive['frontmatter']['links']): string => {
@@ -54,26 +54,22 @@ const collectRelated = (startType: PrimitiveType, startSlug: string, primitives:
 
 export const showCommand = new Command('show')
   .description('Display a primitive and optionally its related subgraph')
-  .argument('<id>', 'Primitive id (prefix:slug or just slug)')
+  .argument('<ref>', 'Qualified primitive id (prefix:slug)')
   .option('-r, --related', 'Show the full related subgraph')
-  .action((idArg: string, opts: { related?: boolean }) => {
+  .action((refArg: string, opts: { related?: boolean }) => {
+    const qualified = parseQualifiedRef(refArg)
+    if (!qualified) {
+      console.error("Use qualified form prefix:slug. E.g., term:my-term.")
+      process.exit(1)
+    }
+
     const projectRoot = requireProjectRoot()
-    const matches = findAllPrimitivesById(projectRoot, idArg)
+    const target = findPrimitiveById(projectRoot, refArg)
 
-    if (matches.length === 0) {
-      console.error(`Primitive '${idArg}' not found.`)
+    if (!target) {
+      console.error(`Primitive '${refArg}' not found.`)
       process.exit(1)
     }
-
-    if (matches.length > 1) {
-      console.error(`Ambiguous id '${idArg}'. Did you mean one of:`)
-      for (const m of matches) {
-        console.error(`  ${qualifyId(m.frontmatter.type, m.frontmatter.id)}`)
-      }
-      process.exit(1)
-    }
-
-    const target = matches[0]
 
     if (!opts.related) {
       printPrimitive(target)
@@ -82,7 +78,7 @@ export const showCommand = new Command('show')
 
     // subgraph mode
     const all = getAllPrimitives(projectRoot)
-    const relatedKeys = collectRelated(target.frontmatter.type, target.frontmatter.id, all)
+    const relatedKeys = collectRelated(qualified.type, qualified.slug, all)
     const relatedPrimitives = all.filter((p) => relatedKeys.has(qualifyId(p.frontmatter.type, p.frontmatter.id)))
 
     for (const p of relatedPrimitives) {

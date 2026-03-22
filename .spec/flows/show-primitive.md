@@ -13,21 +13,23 @@ links:
 tags: [cli]
 ---
 
-**Trigger:** User runs `lore show <id>` with optional `--related` flag
+**Trigger:** User runs `lore show <prefix:slug>` with optional `--related` flag
 
 **Inputs:**
-- `<id>` (required) — primitive id to look up
+- `<prefix:slug>` (required) — qualified primitive id. Unqualified slugs are not accepted.
 - `--related, -r` (optional) — expand to full connected subgraph
 
 **Steps:**
-1. Find project root (walk up for `.spec/SPEC.md`)
-2. Search all primitives for matching id → exit with error if not found
-3. If no `--related` flag: print single primitive (type, name, id, context, deprecated flag, tags, links, body) and exit
-4. If `--related`: load all primitives, BFS from target following both outgoing and incoming links, print each connected primitive separated by `---`
+1. Parse qualified ref → exit with error if not in `prefix:slug` format
+2. Find project root (walk up for `.spec/SPEC.md`)
+3. Look up primitive by type + slug → exit with error if not found
+4. If no `--related` flag: print single primitive (type, name, qualified id, context, deprecated flag, tags, links, body) and exit
+5. If `--related`: load all primitives, BFS from target following both outgoing and incoming links, print each connected primitive separated by `---`
 
 **Outputs:**
 - Single primitive display, or full subgraph display
 
 **Error paths:**
-- Primitive not found → exit with "Primitive '{id}' not found."
+- Unqualified id → exit with "Use qualified form prefix:slug. E.g., term:my-term."
+- Primitive not found → exit with "Primitive 'prefix:slug' not found."
 - No `.spec/` found → exit with "No .spec/ found. Run `lore init` first."

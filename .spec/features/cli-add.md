@@ -19,15 +19,18 @@ links:
 tags: [cli, v0.1]
 ---
 
-**Summary:** The `lore add <type> <id>` command. Creates a new primitive file from the matching template, validates type and id, enforces global id uniqueness, and rebuilds INDEX.md.
+**Summary:** The `lore add <type> <slug>` command. Creates a new primitive file, validates type and slug, enforces per-type uniqueness, requires name and body, and rebuilds INDEX.md.
 
 **Acceptance criteria:**
-- `lore add term my-term` creates `.spec/terms/my-term.md` with frontmatter and template body
-- `--context`, `--name`, `--body` flags populate the corresponding fields
-- Name defaults to title-cased id when not provided
+- `lore add term my-term -n "My Term" -b "Definition here"` creates `.spec/terms/my-term.md` with correct frontmatter and body
+- `--body-file <path>` reads body from file (for multi-line content)
+- `--context` populates the context field
+- Missing `-n` exits with error requiring name
+- Missing `-b` / `--body-file` exits with error requiring body
 - Invalid type exits with error listing valid types
-- Non-kebab-case id exits with error
-- Duplicate id exits with error showing existing file path
+- Non-kebab-case slug exits with error
+- Duplicate slug within same type exits with error showing existing file path
+- Same slug in a different type succeeds
 - INDEX.md is rebuilt after successful add
 
 **Open questions:**

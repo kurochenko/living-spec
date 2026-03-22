@@ -15,12 +15,13 @@ links:
 tags: [cli, v0.1]
 ---
 
-**Summary:** The `lore show <id>` command. Looks up a primitive by id and prints its type, name, context, links, tags, and body. With `--related`, performs a BFS to print the full connected subgraph.
+**Summary:** The `lore show <prefix:slug>` command. Requires a qualified id. Prints the primitive's type, name, context, links, tags, and body. With `--related`, performs a BFS to print the full connected subgraph.
 
 **Acceptance criteria:**
-- `lore show my-term` prints the primitive's frontmatter and body
-- Unknown id exits with "Primitive '{id}' not found."
-- `lore show my-term --related` prints all transitively connected primitives separated by `---`
+- `lore show term:my-term` prints the primitive's frontmatter and body
+- Unqualified slug (e.g., `lore show my-term`) exits with error requiring qualified form
+- Unknown qualified id exits with "Primitive 'prefix:slug' not found."
+- `lore show term:my-term --related` prints all transitively connected primitives separated by `---`
 - Subgraph traversal follows both outgoing and incoming links
 - Deprecated primitives show a warning indicator
 

@@ -8,19 +8,12 @@ import { getAllPrimitives } from '../lib/primitives.js'
 import { rebuildIndex } from '../lib/index-builder.js'
 import { validateType, validateId, qualifyId } from '../lib/validation.js'
 
-const toTitleCase = (kebab: string): string =>
-  kebab
-    .split('-')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ')
-
 const buildPrimitiveFile = (
   type: PrimitiveType,
   id: string,
   name: string,
   context: string,
   body: string,
-  templatePath: string,
 ): string => {
   const frontmatter: Record<string, unknown> = {
     type,
@@ -31,47 +24,58 @@ const buildPrimitiveFile = (
     tags: [],
   }
 
-  if (existsSync(templatePath)) {
-    const template = readFileSync(templatePath, 'utf-8')
-    const { content: templateBody } = matter(template)
-    const finalBody = body || templateBody.trim()
-    return matter.stringify(finalBody ? `\n${finalBody}\n` : '\n', frontmatter)
-  }
-
-  return matter.stringify(body ? `\n${body}\n` : '\n', frontmatter)
+  return matter.stringify(`\n${body}\n`, frontmatter)
 }
 
 export const addCommand = new Command('add')
-  .description('Create a new primitive from its template')
+  .description('Create a new primitive')
   .argument('<type>', 'Primitive type')
-  .argument('<id>', 'Unique kebab-case identifier')
+  .argument('<slug>', 'Unique kebab-case identifier within this type')
+  .requiredOption('-n, --name <name>', 'Human-readable name')
+  .option('-b, --body <body>', 'Prose body text (inline)')
+  .option('--body-file <path>', 'Path to file containing body text')
   .option('-c, --context <context>', 'Bounded context name', '')
-  .option('-n, --name <name>', 'Human-readable name (defaults to title-cased id)')
-  .option('-b, --body <body>', 'Prose body text')
-  .action((typeArg: string, idArg: string, opts: { context: string, name: string, body: string }) => {
+  .action((typeArg: string, slugArg: string, opts: { context: string, name: string, body?: string, bodyFile?: string }) => {
     const type = validateType(typeArg)
-    const id = validateId(idArg)
+    const slug = validateId(slugArg)
     const projectRoot = requireProjectRoot()
     const spec = specDir(projectRoot)
 
+    if (!opts.body && !opts.bodyFile) {
+      console.error("Body is required. Use -b for inline or --body-file for multi-line.")
+      process.exit(1)
+    }
+
+    if (opts.body && opts.bodyFile) {
+      console.error("Use either -b or --body-file, not both.")
+      process.exit(1)
+    }
+
+    let body = opts.body ?? ''
+    if (opts.bodyFile) {
+      if (!existsSync(opts.bodyFile)) {
+        console.error(`Body file not found: ${opts.bodyFile}`)
+        process.exit(1)
+      }
+      body = readFileSync(opts.bodyFile, 'utf-8').trim()
+    }
+
     const existing = getAllPrimitives(projectRoot)
-    const duplicate = existing.find((p) => p.frontmatter.type === type && p.frontmatter.id === id)
+    const duplicate = existing.find((p) => p.frontmatter.type === type && p.frontmatter.id === slug)
     if (duplicate) {
-      const qid = qualifyId(type, id)
+      const qid = qualifyId(type, slug)
       console.error(`Primitive '${qid}' already exists at ${duplicate.filePath}.`)
       process.exit(1)
     }
 
     const folder = TYPE_TO_FOLDER[type]
-    const filePath = join(spec, folder, `${id}.md`)
-    const templatePath = join(spec, 'templates', `${type}.md`)
-    const name = opts.name || toTitleCase(id)
+    const filePath = join(spec, folder, `${slug}.md`)
 
-    const content = buildPrimitiveFile(type, id, name, opts.context, opts.body, templatePath)
+    const content = buildPrimitiveFile(type, slug, opts.name, opts.context, body)
     writeFileSync(filePath, content)
 
     rebuildIndex(projectRoot)
 
-    const qid = qualifyId(type, id)
-    console.log(`Created ${qid} at .spec/${folder}/${id}.md`)
+    const qid = qualifyId(type, slug)
+    console.log(`Created ${qid} at .spec/${folder}/${slug}.md`)
   })

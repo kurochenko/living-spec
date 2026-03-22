@@ -62,21 +62,7 @@ export const findPrimitiveById = (projectRoot: string, ref: string): Primitive |
   const all = getAllPrimitives(projectRoot)
   const qualified = parseQualifiedRef(ref)
 
-  if (qualified) {
-    return all.find((p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug) ?? null
-  }
+  if (!qualified) return null
 
-  // unqualified — search all types
-  return all.find((p) => p.frontmatter.id === ref) ?? null
-}
-
-export const findAllPrimitivesById = (projectRoot: string, ref: string): Primitive[] => {
-  const all = getAllPrimitives(projectRoot)
-  const qualified = parseQualifiedRef(ref)
-
-  if (qualified) {
-    return all.filter((p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug)
-  }
-
-  return all.filter((p) => p.frontmatter.id === ref)
+  return all.find((p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug) ?? null
 }
