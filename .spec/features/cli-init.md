@@ -31,6 +31,7 @@ tags: [cli, v0.1]
 - Running init where `.spec/` exists prints `.spec/ already exists at {path}` and does nothing
 - All eight template files are created
 - All eight primitive folders are created inside `.spec/`
+- After scaffolding, prints a ready-to-paste prompt snippet for agent integration (the user copies it into their LLM tool's config file)
 
 **Open questions:**
 - None

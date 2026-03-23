@@ -59,4 +59,18 @@ describe('flow:init-spec', () => {
     assert.equal(r.exitCode, 0)
     assert.ok(r.stdout.includes('.spec/ already exists'))
   })
+
+  it('prints agent integration prompt snippet after init', () => {
+    const r = run(['init'], dir)
+    assert.ok(r.stdout.includes('Add the following to your LLM agent config'))
+    assert.ok(r.stdout.includes('lore show'))
+    assert.ok(r.stdout.includes('lore check'))
+    assert.ok(r.stdout.includes('.spec/SPEC.md'))
+  })
+
+  it('does not print prompt snippet when .spec/ already exists', () => {
+    run(['init'], dir)
+    const r = run(['init'], dir)
+    assert.ok(!r.stdout.includes('Add the following to your LLM agent config'))
+  })
 })

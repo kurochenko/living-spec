@@ -24,9 +24,11 @@ tags: [cli]
 5. Write `.spec/INDEX.md` (empty index)
 6. Write `.spec/templates/{type}.md` for each of the eight types
 7. Print confirmation with created structure
+8. Print a ready-to-paste agent integration prompt snippet — a block of text the user copies into their LLM tool's config file (CLAUDE.md, .cursorrules, etc.) so the LLM discovers and follows the spec on every session
 
 **Outputs:**
 - Complete `.spec/` directory ready for use
+- Agent integration prompt snippet printed to stdout
 
 **Error paths:**
 - Target directory doesn't exist → exit with error
