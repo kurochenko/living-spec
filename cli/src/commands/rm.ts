@@ -22,7 +22,7 @@ export const rmCommand = new Command('rm')
       const refs = findInboundReferences(projectRoot, refArg)
       if (refs.length > 0) {
         const refList = refs
-          .map((p) => `  ${qualifyId(p.frontmatter.type, p.frontmatter.id)}`)
+          .map((p) => `  ${qualifyId(p.frontmatter.type, p.frontmatter.id, p.frontmatter.context)}`)
           .join('\n')
         console.error(`Cannot remove ${refArg} — referenced by:\n${refList}\nUse --force to delete anyway.`)
         process.exit(1)

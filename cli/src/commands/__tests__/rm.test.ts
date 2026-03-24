@@ -56,4 +56,14 @@ describe('flow:rm-primitive', () => {
     assert.equal(r.exitCode, 1)
     assert.ok(r.stderr.includes('qualified form'))
   })
+
+  it('error message includes context-qualified inbound refs', () => {
+    run(['add', 'term', 'status', '-c', 'billing', '-n', 'Billing Status', '-b', 'A status.'], dir)
+    run(['add', 'flow', 'check', '-c', 'billing', '-n', 'Check Status', '-b', 'A flow.'], dir)
+    run(['link', 'billing.flow:check', 'depends-on', 'billing.term:status'], dir)
+
+    const r = run(['rm', 'billing.term:status'], dir)
+    assert.equal(r.exitCode, 1)
+    assert.ok(r.stderr.includes('billing.flow:check'))
+  })
 })
