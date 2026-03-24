@@ -21,6 +21,47 @@ Before implementing any feature:
 
 When you discover domain knowledge that isn't captured in the spec, propose a new primitive to the user. Write it only after confirmation. Always update INDEX.md when adding or changing primitives.
 
+### This Project's Dual Nature
+
+This project has two interrelated concerns:
+
+1. **It is a tool**: The `lore` CLI — a project-agnostic framework for maintaining structured domain knowledge
+2. **It is a Living Spec project itself**: It uses `lore` to manage its own spec stored in `.spec/`
+
+When `lore init` runs in a new project, it copies the seed spec from `cli/src/lib/seed/spec.ts`. This means changes to `.spec/SPEC.md` and the seed must stay in sync — they are the same content.
+
+### How to Work on This Project
+
+Because this project IS living spec using living spec, the "spec first" rule applies to this project's own features:
+
+1. **Implementing a feature** (e.g., new command, new option, new behavior):
+   - Create or update spec primitives in `.spec/features/`, `.spec/flows/`, `.spec/invariants/`
+   - Write tests that exercise the spec primitives
+   - Implement the code until tests pass
+
+2. **Changing the spec template** (the seed):
+   - Update both `.spec/SPEC.md` and `cli/src/lib/seed/spec.ts` together — they must remain identical
+
+3. **Reviewing code**:
+   - Ensure spec primitives exist for every implemented behavior
+   - Ensure tests exist for invariants, rules, and flows
+
+### Test Coverage Expectations
+
+When implementing a feature, ensure tests cover:
+- Happy path (command succeeds with valid input)
+- Error paths (invalid input, ambiguous refs, missing files)
+- Edge cases (disambiguation, cross-context scenarios, boundary values)
+
+Tests run against the compiled CLI at `dist/index.js`. Run `bun run build` (or `bun run build:test` for the test tsconfig) before running tests.
+
+### If Implementation Precedes Spec
+
+If a feature was implemented before the spec was written (a violation), recover by:
+1. Write the spec primitives that describe what was built
+2. Add tests that exercise those spec primitives
+3. Update `.spec/SPEC.md` and `cli/src/lib/seed/spec.ts` together
+
 ## Tech stack
 
 - TypeScript (strict mode, ESM)
@@ -34,20 +75,20 @@ When you discover domain knowledge that isn't captured in the spec, propose a ne
 ## Commands
 
 ```
-lore init [--dir <path>]           # create .spec/ in target directory
-lore add <type> <slug> [options]   # create a new primitive from template
-lore show <prefix:slug> [--related]  # read a primitive or its subgraph
-lore link <source> <edge> <target> # add a typed edge between two primitives
+lore init [--dir <path>]                              # create .spec/ in target directory
+lore add <type> <slug> -n <name> [-c <context>]     # create a new primitive from template
+lore show <ref> [--related]                          # read a primitive or its subgraph
+lore link <source> <edge> <target>                   # add a typed edge between two primitives
 lore unlink <source> <edge> <target>
-lore rm <prefix:slug> [--force]    # delete a primitive (checks for dangling refs)
-lore list [--type <type>]          # list all primitives
-lore deprecate <prefix:slug>       # mark a primitive as deprecated
-lore reindex                       # rebuild INDEX.md from disk
-lore rename <prefix:slug> <new-slug> # rename a primitive, rewrite all inbound refs
-lore check <prefix:slug>           # completeness check — reports dead refs and deprecated
+lore rm <ref> [--force]                              # delete a primitive (checks for dangling refs)
+lore list [--type <type>] [--context <context>]       # list all primitives
+lore deprecate <ref>                                 # mark a primitive as deprecated
+lore reindex                                         # rebuild INDEX.md from disk
+lore rename <ref> <new-slug>                         # rename a primitive, rewrite all inbound refs
+lore check <ref>                                     # completeness check — reports dead refs and deprecated
 ```
 
-IDs use qualified form `prefix:slug` in links and references. Prefixes: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Uniqueness is scoped per type — two different types can share the same slug.
+IDs use qualified form `prefix:slug` or `context.prefix:slug` in links and references. Prefixes: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Uniqueness is scoped per (type, context) pair.
 
 Anywhere a command takes a type as input, both the full name (`feature`) and the prefix (`feat`) are accepted. Frontmatter always stores the full name.
 
