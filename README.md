@@ -2,11 +2,62 @@
 
 Drop-in knowledge base that tells your LLM what's true about your project before it writes code.
 
-## Quick start
+## Why
+
+Every project accumulates hidden knowledge — the invariants your team keeps in head, the decisions made in PRs that everyone forgets, the rules that "everyone knows" but nobody wrote down.
+
+LLMs write code based on what they see in your codebase. If your rules live in Slack threads, Notion docs, or tribal knowledge, the LLM will miss them. It will implement features that contradict your invariants. It will "help" by making things up.
+
+### A shared language both you and the LLM can reason about
+
+Living Spec gives you a small vocabulary of **primitives** — Term, Invariant, Rule, Event, Flow, Contract, Decision, Feature — connected by typed **edges** (depends-on, constrains, includes, maps-to, emits, triggers).
+
+Inspired by Domain-Driven Design, but flattened for LLM readability. Instead of Ubiquitous Language buried in prose, you get a traversable graph where every concept is explicit and linked.
+
+**Term** captures what something *is* (e.g., `term:ltv` — a customer's lifetime value). **Invariant** captures what must *always* hold (`inv:ltv-never-negative`). **Rule** captures configurable policy. **Flow** shows how things proceed. **Feature** is the entry point. Edges connect them all.
+
+### Design before you build
+
+When you add a Feature, you trace its edges: what Terms does it use? What Invariants must hold? What Rules apply? What Flows does it touch? If any link is missing or vague — that's a gap. You fill it before coding, not during. This forces deliberate decomposition — you can't spec a feature you don't understand.
+
+### The LLM checks its work — and writes the tests to prove it
+
+Before implementing, the LLM reads the spec and traverses the graph. It can verify: does this feature's implementation respect `inv:ltv-never-negative`? Does it use `term:ltv` correctly in context? If something's missing or violated, it stops and asks — instead of shipping silently wrong code.
+
+But it goes further: the LLM writes tests to *prove* invariants hold, rules are honored, flows behave correctly. Not just happy-path tests — it generates boundary cases from the spec's invariants and edge constraints. You get regression coverage "for free" because it was designed in.
+
+### Cross-context smell detection
+
+When a Feature touches multiple Flows, or a Term is used in contexts you didn't expect, the graph surfaces it. "Wait — `term:ltv` is being referenced from `flow:churn-analysis` and `flow:loan-origination`? Are those contexts compatible?" The spec makes implicit relationships visible before they become bugs.
+
+## Installation
+
+### GitHub Release (recommended)
+
+Download the latest release from [GitHub Releases](https://github.com/kurochenko/lore/releases/latest) and install:
 
 ```bash
-npx @kurochenko/lore init
+npm install https://github.com/kurochenko/lore/releases/latest/download/kurochenko-lore-0.1.0.tgz
+lore init
 ```
+
+### One-liner with bunx
+
+```bash
+bunx https://github.com/kurochenko/lore/releases/latest/download/kurochenko-lore-0.1.0.tgz init
+```
+
+### From source
+
+```bash
+git clone https://github.com/kurochenko/lore.git
+cd lore/cli
+bun install
+bun run build
+lore init
+```
+
+## Quick start
 
 Add this to your AGENTS.md, CLAUDE.md, or cursor rules:
 
