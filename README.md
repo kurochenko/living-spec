@@ -32,14 +32,13 @@ When a Feature touches multiple Flows, or a Term is used in contexts you didn't 
 
 ## Installation
 
-### GitHub Release (recommended)
-
-Download the latest release from [GitHub Releases](https://github.com/kurochenko/lore/releases/latest) and install:
+### One-liner (recommended)
 
 ```bash
-npm install https://github.com/kurochenko/lore/releases/latest/download/kurochenko-lore-0.1.0.tgz
-lore init
+curl -fsSL https://raw.githubusercontent.com/kurochenko/lore/master/install.sh | bash
 ```
+
+This downloads the latest release from GitHub and installs globally via npm. Requires Node.js >= 20.
 
 ### One-liner with bunx
 
