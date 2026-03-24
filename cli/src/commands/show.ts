@@ -11,7 +11,7 @@ const formatLinks = (links: Primitive['frontmatter']['links']): string => {
 
 const printPrimitive = (p: Primitive): void => {
   const fm = p.frontmatter
-  const qid = qualifyId(fm.type, fm.id)
+  const qid = qualifyId(fm.type, fm.id, fm.context)
   console.log(`${fm.type}: ${fm.name} [${qid}]`)
   if (fm.context) console.log(`context: ${fm.context}`)
   if (fm.deprecated) console.log('⚠ deprecated')
@@ -20,31 +20,48 @@ const printPrimitive = (p: Primitive): void => {
   if (p.body) console.log(`\n${p.body}`)
 }
 
-const collectRelated = (startType: PrimitiveType, startSlug: string, primitives: Primitive[]): Set<string> => {
+const collectRelated = (startType: PrimitiveType, startSlug: string, startContext: string | undefined, primitives: Primitive[]): Set<string> => {
   const visited = new Set<string>()
-  const startKey = qualifyId(startType, startSlug)
+  const startKey = qualifyId(startType, startSlug, startContext)
   const queue = [startKey]
 
-  const keyOf = (p: Primitive) => qualifyId(p.frontmatter.type, p.frontmatter.id)
+  const keyOf = (p: Primitive) => qualifyId(p.frontmatter.type, p.frontmatter.id, p.frontmatter.context)
+
+  const primitivesByKey = new Map(primitives.map((p) => [keyOf(p), p]))
+
+  const resolveTarget = (targetRef: string): string | null => {
+    const parsed = parseQualifiedRef(targetRef)
+    if (!parsed) return null
+    if (parsed.context) {
+      const key = qualifyId(parsed.type, parsed.slug, parsed.context)
+      return primitivesByKey.has(key) ? key : null
+    }
+    const matches = primitives.filter((p) => p.frontmatter.type === parsed.type && p.frontmatter.id === parsed.slug)
+    if (matches.length === 1) return keyOf(matches[0])
+    if (matches.length === 0) return null
+    return null
+  }
 
   while (queue.length > 0) {
     const key = queue.shift()!
     if (visited.has(key)) continue
     visited.add(key)
 
-    const prim = primitives.find((p) => keyOf(p) === key)
+    const prim = primitivesByKey.get(key)
     if (!prim) continue
 
-    // outgoing links — targets are already qualified in frontmatter
     for (const link of prim.frontmatter.links) {
-      if (!visited.has(link.target)) queue.push(link.target)
+      const resolved = resolveTarget(link.target)
+      if (resolved && !visited.has(resolved)) queue.push(resolved)
     }
 
-    // incoming links (anything that points to this key)
     for (const other of primitives) {
       const otherKey = keyOf(other)
       if (visited.has(otherKey)) continue
-      const pointsHere = other.frontmatter.links.some((l) => l.target === key)
+      const pointsHere = other.frontmatter.links.some((l) => {
+        const resolved = resolveTarget(l.target)
+        return resolved === key
+      })
       if (pointsHere) queue.push(otherKey)
     }
   }
@@ -78,8 +95,8 @@ export const showCommand = new Command('show')
 
     // subgraph mode
     const all = getAllPrimitives(projectRoot)
-    const relatedKeys = collectRelated(qualified.type, qualified.slug, all)
-    const relatedPrimitives = all.filter((p) => relatedKeys.has(qualifyId(p.frontmatter.type, p.frontmatter.id)))
+    const relatedKeys = collectRelated(qualified.type, qualified.slug, qualified.context, all)
+    const relatedPrimitives = all.filter((p) => relatedKeys.has(qualifyId(p.frontmatter.type, p.frontmatter.id, p.frontmatter.context)))
 
     for (const p of relatedPrimitives) {
       printPrimitive(p)

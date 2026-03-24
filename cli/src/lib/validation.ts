@@ -37,22 +37,37 @@ export interface QualifiedRef {
   prefix: string
   type: PrimitiveType
   slug: string
+  context?: string
 }
 
 export const parseQualifiedRef = (ref: string): QualifiedRef | null => {
   const colonIdx = ref.indexOf(':')
   if (colonIdx === -1) return null
 
-  const prefix = ref.slice(0, colonIdx)
+  const beforeColon = ref.slice(0, colonIdx)
   const slug = ref.slice(colonIdx + 1)
-  const type = PREFIX_TO_TYPE[prefix]
 
-  if (!type || !slug) return null
-  return { prefix, type, slug }
+  if (!slug) return null
+
+  let context: string | undefined
+  let prefix: string
+
+  const dotIdx = beforeColon.indexOf('.')
+  if (dotIdx !== -1) {
+    context = beforeColon.slice(0, dotIdx)
+    prefix = beforeColon.slice(dotIdx + 1)
+  } else {
+    prefix = beforeColon
+  }
+
+  const type = PREFIX_TO_TYPE[prefix]
+  if (!type) return null
+
+  return { prefix, type, slug, context }
 }
 
-export const qualifyId = (type: PrimitiveType, slug: string): string =>
-  `${TYPE_TO_PREFIX[type]}:${slug}`
+export const qualifyId = (type: PrimitiveType, slug: string, context?: string): string =>
+  context ? `${context}.${TYPE_TO_PREFIX[type]}:${slug}` : `${TYPE_TO_PREFIX[type]}:${slug}`
 
 export const isValidEdgeType = (edge: string): edge is EdgeType =>
   (EDGE_TYPES as readonly string[]).includes(edge)

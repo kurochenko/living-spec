@@ -64,7 +64,23 @@ export const findPrimitiveById = (projectRoot: string, ref: string): Primitive |
 
   if (!qualified) return null
 
-  return all.find((p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug) ?? null
+  const candidates = all.filter(
+    (p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug
+  )
+
+  if (candidates.length === 0) return null
+
+  if (qualified.context) {
+    return candidates.find((p) => p.frontmatter.context === qualified.context) ?? null
+  }
+
+  if (candidates.length > 1) {
+    const contexts = candidates.map((p) => p.frontmatter.context).filter(Boolean).join(', ')
+    console.error(`Ambiguous ref '${ref}' — multiple matches exist: ${contexts}. Use full form context.prefix:slug.`)
+    process.exit(1)
+  }
+
+  return candidates[0]
 }
 
 export const addLink = (primitive: Primitive, edge: EdgeType, target: string): void => {
@@ -90,10 +106,29 @@ export const removeLink = (primitive: Primitive, edge: EdgeType, target: string)
 
 export const findInboundReferences = (projectRoot: string, ref: string): Primitive[] => {
   const all = getAllPrimitives(projectRoot)
+  const qualified = parseQualifiedRef(ref)
+
+  if (!qualified) return []
+
+  const targets = all.filter(
+    (p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug
+  )
+
+  if (targets.length === 0) return []
+
+  const targetKeys = new Set(
+    targets.map((t) => qualifyId(t.frontmatter.type, t.frontmatter.id, t.frontmatter.context))
+  )
+
   return all.filter((p) => {
-    const qid = qualifyId(p.frontmatter.type, p.frontmatter.id)
-    if (qid === ref) return false
-    return p.frontmatter.links.some((l) => l.target === ref)
+    const selfKey = qualifyId(p.frontmatter.type, p.frontmatter.id, p.frontmatter.context)
+    if (targetKeys.has(selfKey)) return false
+    return p.frontmatter.links.some((l) => {
+      const linkTarget = parseQualifiedRef(l.target)
+      if (!linkTarget) return l.target === ref
+      const linkKey = qualifyId(linkTarget.type, linkTarget.slug, linkTarget.context)
+      return targetKeys.has(linkKey)
+    })
   })
 }
 
@@ -112,7 +147,8 @@ export const renamePrimitive = (primitive: Primitive, newSlug: string): string =
   const raw = readFileSync(primitive.filePath, 'utf-8')
   const { data, content } = matter(raw)
   data.id = newSlug
-  const newPath = join(dirname(primitive.filePath), `${newSlug}.md`)
+  const filename = data.context ? `${data.context}.${newSlug}.md` : `${newSlug}.md`
+  const newPath = join(dirname(primitive.filePath), filename)
   writeFileSync(newPath, matter.stringify(content, data))
   unlinkSync(primitive.filePath)
   return newPath
