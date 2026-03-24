@@ -83,4 +83,25 @@ describe('flow:check-feature', () => {
     assert.equal(r.exitCode, 1)
     assert.ok(r.stderr.includes('qualified form'))
   })
+
+  it('context-qualified ref works with check', () => {
+    run(['add', 'term', 'status', '-n', 'Billing Status', '-c', 'billing', '-b', 'Billing status.'], dir)
+    run(['add', 'flow', 'check', '-n', 'Check Status', '-c', 'billing', '-b', 'A flow.'], dir)
+    run(['link', 'billing.flow:check', 'depends-on', 'billing.term:status'], dir)
+
+    const r = run(['check', 'billing.flow:check'], dir)
+    assert.equal(r.exitCode, 0)
+    assert.ok(r.stdout.includes('✓'))
+  })
+
+  it('ambiguous short ref errors with disambiguation hint', () => {
+    run(['add', 'term', 'status', '-n', 'Billing Status', '-c', 'billing', '-b', 'Billing status.'], dir)
+    run(['add', 'term', 'status', '-n', 'Recipe Status', '-c', 'recipe', '-b', 'Recipe status.'], dir)
+
+    const r = run(['check', 'term:status'], dir)
+    assert.equal(r.exitCode, 1)
+    assert.ok(r.stderr.includes('Ambiguous'))
+    assert.ok(r.stderr.includes('billing'))
+    assert.ok(r.stderr.includes('recipe'))
+  })
 })

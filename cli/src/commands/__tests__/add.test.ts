@@ -100,3 +100,46 @@ describe('flow:add-primitive', () => {
     assert.ok(index.includes('term:indexed'))
   })
 })
+
+describe('context-qualified refs', () => {
+  it('add -c creates {context}.{slug}.md file', () => {
+    const r = run(['add', 'term', 'status', '-n', 'Status', '-c', 'billing', '-b', 'A status.'], dir)
+    assert.equal(r.exitCode, 0)
+    assert.ok(r.stdout.includes('billing.term:status'))
+    assert.ok(r.stdout.includes('.spec/terms/billing.status.md'))
+
+    const filePath = join(dir, '.spec', 'terms', 'billing.status.md')
+    assert.ok(existsSync(filePath))
+
+    const { data } = matter(readFileSync(filePath, 'utf-8'))
+    assert.equal(data.type, 'term')
+    assert.equal(data.id, 'status')
+    assert.equal(data.context, 'billing')
+  })
+
+  it('add -c duplicate within same (type, context, slug) is rejected', () => {
+    run(['add', 'term', 'status', '-n', 'Billing Status', '-c', 'billing', '-b', 'A status.'], dir)
+    const r = run(['add', 'term', 'status', '-n', 'Billing Status Again', '-c', 'billing', '-b', 'Another status.'], dir)
+    assert.equal(r.exitCode, 1)
+    assert.ok(r.stderr.includes('billing.term:status'))
+    assert.ok(r.stderr.includes('already exists'))
+  })
+
+  it('same slug in different contexts can coexist', () => {
+    run(['add', 'term', 'status', '-n', 'Billing Status', '-c', 'billing', '-b', 'A status.'], dir)
+    const r = run(['add', 'term', 'status', '-n', 'Recipe Status', '-c', 'recipe', '-b', 'A status.'], dir)
+    assert.equal(r.exitCode, 0)
+
+    assert.ok(existsSync(join(dir, '.spec', 'terms', 'billing.status.md')))
+    assert.ok(existsSync(join(dir, '.spec', 'terms', 'recipe.status.md')))
+  })
+
+  it('non-contexted and contexted with same slug can coexist', () => {
+    run(['add', 'term', 'status', '-n', 'Shared Status', '-b', 'A status.'], dir)
+    const r = run(['add', 'term', 'status', '-n', 'Billing Status', '-c', 'billing', '-b', 'A status.'], dir)
+    assert.equal(r.exitCode, 0)
+
+    assert.ok(existsSync(join(dir, '.spec', 'terms', 'status.md')))
+    assert.ok(existsSync(join(dir, '.spec', 'terms', 'billing.status.md')))
+  })
+})
