@@ -53,23 +53,44 @@ const walkGraph = (
 
 export const checkCommand = new Command('check')
   .description('Check completeness of a primitive\'s dependency graph')
-  .argument('<ref>', 'Qualified primitive id (prefix:slug)')
+  .argument('<ref>', 'Qualified primitive id (prefix:slug or context.prefix:slug)')
   .action((refArg: string) => {
-    requireQualifiedRef(refArg, 'Ref')
+    const qualified = requireQualifiedRef(refArg, 'Ref')
     const projectRoot = requireProjectRoot()
     const all = getAllPrimitives(projectRoot)
 
     const primitivesByQid = new Map<string, Primitive>()
     for (const p of all) {
-      primitivesByQid.set(qualifyId(p.frontmatter.type, p.frontmatter.id), p)
+      const key = qualifyId(p.frontmatter.type, p.frontmatter.id, p.frontmatter.context)
+      primitivesByQid.set(key, p)
     }
 
-    if (!primitivesByQid.has(refArg)) {
-      console.error(`Primitive '${refArg}' not found.`)
-      process.exit(1)
+    const candidates = all.filter(
+      (p) => p.frontmatter.type === qualified.type && p.frontmatter.id === qualified.slug
+    )
+
+    let startRef: string
+    if (qualified.context) {
+      const match = candidates.find((p) => p.frontmatter.context === qualified.context)
+      if (!match) {
+        console.error(`Primitive '${refArg}' not found.`)
+        process.exit(1)
+      }
+      startRef = qualifyId(qualified.type, qualified.slug, qualified.context)
+    } else {
+      if (candidates.length === 0) {
+        console.error(`Primitive '${refArg}' not found.`)
+        process.exit(1)
+      }
+      if (candidates.length > 1) {
+        const contexts = candidates.map((p) => p.frontmatter.context).filter(Boolean).join(', ')
+        console.error(`Ambiguous ref '${refArg}' — multiple matches exist: ${contexts}. Use full form context.prefix:slug.`)
+        process.exit(1)
+      }
+      startRef = qualifyId(qualified.type, qualified.slug, candidates[0].frontmatter.context)
     }
 
-    const { visited, dead, deprecated } = walkGraph(refArg, primitivesByQid)
+    const { visited, dead, deprecated } = walkGraph(startRef, primitivesByQid)
 
     for (const d of dead) {
       console.log(`✗ missing: ${d.ref} (referenced by ${d.referencedBy} via ${d.edge})`)

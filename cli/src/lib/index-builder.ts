@@ -18,7 +18,7 @@ const SECTION_LABELS: Record<string, string> = {
 
 const formatPrimitive = (p: Primitive): string => {
   const { type, id, context, links } = p.frontmatter
-  const qid = qualifyId(type, id)
+  const qid = qualifyId(type, id, context)
   const ctx = context ? ` (${context})` : ''
 
   if (!links || links.length === 0) {

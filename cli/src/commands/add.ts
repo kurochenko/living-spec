@@ -13,6 +13,7 @@ const buildPrimitiveFile = (
   id: string,
   name: string,
   body: string,
+  context?: string,
 ): string => {
   const frontmatter: Record<string, unknown> = {
     type,
@@ -20,6 +21,10 @@ const buildPrimitiveFile = (
     id,
     links: [],
     tags: [],
+  }
+
+  if (context) {
+    frontmatter.context = context
   }
 
   return matter.stringify(`\n${body}\n`, frontmatter)
@@ -32,7 +37,8 @@ export const addCommand = new Command('add')
   .requiredOption('-n, --name <name>', 'Human-readable name')
   .option('-b, --body <body>', 'Prose body text (inline)')
   .option('--body-file <path>', 'Path to file containing body text')
-  .action((typeArg: string, slugArg: string, opts: { name: string, body?: string, bodyFile?: string }) => {
+  .option('-c, --context <context>', 'Bounded context for this primitive')
+  .action((typeArg: string, slugArg: string, opts: { name: string, body?: string, bodyFile?: string, context?: string }) => {
     const type = validateType(typeArg)
     const slug = validateId(slugArg)
     const projectRoot = requireProjectRoot()
@@ -58,21 +64,24 @@ export const addCommand = new Command('add')
     }
 
     const existing = getAllPrimitives(projectRoot)
-    const duplicate = existing.find((p) => p.frontmatter.type === type && p.frontmatter.id === slug)
+    const duplicate = existing.find(
+      (p) => p.frontmatter.type === type && p.frontmatter.id === slug && p.frontmatter.context === opts.context
+    )
     if (duplicate) {
-      const qid = qualifyId(type, slug)
+      const qid = qualifyId(type, slug, opts.context)
       console.error(`Primitive '${qid}' already exists at ${duplicate.filePath}.`)
       process.exit(1)
     }
 
     const folder = TYPE_TO_FOLDER[type]
-    const filePath = join(spec, folder, `${slug}.md`)
+    const filename = opts.context ? `${opts.context}.${slug}.md` : `${slug}.md`
+    const filePath = join(spec, folder, filename)
 
-    const content = buildPrimitiveFile(type, slug, opts.name, body)
+    const content = buildPrimitiveFile(type, slug, opts.name, body, opts.context)
     writeFileSync(filePath, content)
 
     rebuildIndex(projectRoot)
 
-    const qid = qualifyId(type, slug)
-    console.log(`Created ${qid} at .spec/${folder}/${slug}.md`)
+    const qid = qualifyId(type, slug, opts.context)
+    console.log(`Created ${qid} at .spec/${folder}/${filename}`)
   })
