@@ -137,19 +137,32 @@ There is no status lifecycle. If a file exists, it's active. The only flag is \`
 
 ### Deriving tests from the spec
 
-Four primitive types are testable — their files tell you exactly what to test:
+Four primitive types have testable specifications:
 
-**Invariants** → unit tests. The file declares a condition and a violation outcome. Write one test asserting the condition holds and one asserting the violation path behaves correctly.
+**Invariants** declare conditions that must always hold. Test two paths:
+- Assert the invariant holds for valid inputs
+- Assert violations are rejected with a clear error
 
-**Rules** → unit tests. Same as invariants, but rules are parameterized. Test the default behavior and boundary values of each parameter.
+**Rules** declare configurable policies. Test boundary values and the default behavior.
 
-**Flows** → happy path + error path tests. The file lists steps (the happy path) and error paths (the edge cases). Each step is a test assertion, each error path is a test case.
+**Flows** declare ordered sequences of steps. Test:
+- Happy path: all steps execute in the correct order
+- Error paths: each failure mode produces the correct outcome
 
-**Contracts** → integration or contract tests. The file declares what we send, what we receive, and failure modes. Test that the shape matches and failures are handled.
+**Contracts** declare interface boundaries with external systems. Test what you send, what you receive, and how failures are handled.
 
-Four types produce no dedicated tests: Terms (definitions), Decisions (rationale), Events (tested via flows), Features (rollups).
+Four types are not directly testable:
+- **Terms** — definitions only, nothing to execute
+- **Decisions** — rationale, validated implicitly through the code they shape
+- **Events** — tested through the flows that emit and trigger them
+- **Features** — rollups, verified by testing their constituent primitives
 
-When implementing a feature, collect its invariants, rules, flows, and contracts. These are your test cases.
+When implementing a feature:
+1. Collect its invariants, rules, flows, and contracts — these are your test cases
+2. Write the spec primitives first
+3. Write tests before implementing
+4. Implement until tests pass
+5. Never declare implementation complete without passing tests
 
 ### Reviewing code against the spec
 
