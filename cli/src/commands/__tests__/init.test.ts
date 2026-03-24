@@ -63,9 +63,9 @@ describe('flow:init-spec', () => {
   it('prints agent integration prompt snippet after init', () => {
     const r = run(['init'], dir)
     assert.ok(r.stdout.includes('Add the following to your LLM agent config'))
-    assert.ok(r.stdout.includes('lore show'))
-    assert.ok(r.stdout.includes('lore check'))
     assert.ok(r.stdout.includes('.spec/SPEC.md'))
+    assert.ok(r.stdout.includes('lore'))
+    assert.ok(!r.stdout.includes('lore show <prefix:slug>'))
   })
 
   it('does not print prompt snippet when .spec/ already exists', () => {
