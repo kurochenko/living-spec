@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'lore-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: cd cli && bun install --frozen-lockfile
+      - run: cd cli && bun run build
+      - name: Pack and create checksums
+        run: |
+          cd cli
+          mkdir -p ../dist
+          npm pack --pack-destination ../dist
+          cd ..
+          shasum -a 256 dist/*.tgz | cut -d ' ' -f1 > dist/checksums.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
