@@ -40,12 +40,6 @@ curl -fsSL https://raw.githubusercontent.com/kurochenko/lore/master/install.sh |
 
 This downloads the latest release from GitHub and installs globally via npm. Requires Node.js >= 20.
 
-### One-liner with bunx
-
-```bash
-bunx https://github.com/kurochenko/lore/releases/latest/download/kurochenko-lore-0.1.0.tgz init
-```
-
 ### From source
 
 ```bash
