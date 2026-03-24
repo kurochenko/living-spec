@@ -25,6 +25,9 @@ tags: [cli, v0.2]
 - Works on any primitive, not just features
 - Unqualified ref → exit with error
 - Nonexistent primitive → exit with error
+- Bare (unwrapped) primitive refs in prose → exit 1, lists each with file:line
+- Linked but not wrapped in prose → warning, doesn't fail
+- Invalid `[[wrapped-ref]]` (no such primitive) → warning, doesn't fail
 
 **Open questions:**
 - None
