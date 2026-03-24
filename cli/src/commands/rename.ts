@@ -1,6 +1,6 @@
 import { Command } from 'commander'
-import { requireProjectRoot } from '../lib/spec-root.js'
-import { getAllPrimitives, findPrimitiveById, renamePrimitive, rewriteLinkTargets } from '../lib/primitives.js'
+import { requireProjectRoot } from '../lib/require-with-migration.js'
+import { getAllPrimitives, findPrimitiveById, renamePrimitive, rewriteLinkTargets, rewriteProseWrappers } from '../lib/primitives.js'
 import { rebuildIndex } from '../lib/index-builder.js'
 import { requireQualifiedRef, validateId, qualifyId } from '../lib/validation.js'
 
@@ -32,8 +32,10 @@ export const renameCommand = new Command('rename')
     }
 
     renamePrimitive(primitive, newSlug)
-    const rewritten = rewriteLinkTargets(projectRoot, oldRefArg, newQid)
+    const rewrittenLinks = rewriteLinkTargets(projectRoot, oldRefArg, newQid)
+    const rewrittenProse = rewriteProseWrappers(projectRoot, oldRefArg, newQid)
     rebuildIndex(projectRoot)
 
-    console.log(`Renamed ${oldRefArg} → ${newQid}. Updated ${rewritten} inbound reference(s).`)
+    const proseMsg = rewrittenProse > 0 ? `, updated ${rewrittenProse} prose wrapper(s)` : ''
+    console.log(`Renamed ${oldRefArg} → ${newQid}. Updated ${rewrittenLinks} inbound reference(s)${proseMsg}.`)
   })

@@ -15,7 +15,7 @@ links:
 tags: [cli, v0.2]
 ---
 
-**Summary:** The `lore check <prefix:slug>` command. Walks a primitive's dependency graph and reports missing (dead ref) or deprecated primitives.
+**Summary:** The `lore check <prefix:slug>` command. Walks a primitive's dependency graph and reports dead refs, deprecated refs, and prose/frontmatter consistency issues.
 
 **Acceptance criteria:**
 - `lore check feat:my-feat` with all refs resolved → exit 0, prints complete message with count
@@ -25,9 +25,11 @@ tags: [cli, v0.2]
 - Works on any primitive, not just features
 - Unqualified ref → exit with error
 - Nonexistent primitive → exit with error
-- Bare (unwrapped) primitive refs in prose → exit 1, lists each with file:line
-- Linked but not wrapped in prose → warning, doesn't fail
-- Invalid `[[wrapped-ref]]` (no such primitive) → warning, doesn't fail
+- Frontmatter link missing a matching `[[wrapped-ref]]` in prose → exit 1
+- `[[wrapped-ref]]` in prose missing a matching frontmatter link → exit 1
+- Invalid `[[wrapped-ref]]` (no such primitive, or ambiguous short ref) → exit 1
+- Frontmatter link target that does not resolve to a primitive → exit 1
+- Bare primitive ref occurrence in prose → warning with file:line as a probable unlinked or unwrapped mention
 
 **Open questions:**
 - None

@@ -9,14 +9,14 @@ links:
 tags: [core, v0.2]
 ---
 
-**Condition:** All primitive references in prose must use the `[[...]]` wrapper syntax where `...` is the qualified primitive ID (e.g., [[billing.term:status]]).
+**Condition:** Primitive references that participate in the prose/frontmatter link contract must use the `[[...]]` wrapper syntax, where `...` is a valid primitive ref (`prefix:slug` or `context.prefix:slug`).
 
-**Syntax:** `[[context.prefix:slug]]` — the double brackets `[[` and `]]` are literal delimiters; the inside is the qualified ID.
+**Syntax:** `[[lore.term:primitive]]` — the double brackets `[[` and `]]` are literal delimiters; the inside is the qualified ID.
 
 **Examples:**
-- Valid: `[[term:ltv]]`, `[[billing.term:status]]`, `[[flow:submit-review]]`
-- Invalid: `term:ltv` (bare, no wrapper), [[ltv]] (missing context/type prefix)
+- Valid: `[[term:primitive]]`, `[[lore.feat:cli-add]]`, `[[lore.flow:check-completeness]]`
+- Invalid: `term:primitive` (bare, no wrapper), `[[lore]]` (missing type prefix)
 
 **Note on examples in spec documentation:** When showing `[[...]]` syntax as an example in spec prose (not as a real reference), wrap the entire `[[...]]` in backticks to prevent false validation: use `[[prefix:slug]]` not `[[prefix:slug]]`.
 
-**Violation means:** `lore check` reports an error with the file path and line number of the unwrapped reference.
+**Violation means:** `lore check` reports an error when the resolved wrapped-ref set and resolved frontmatter-link set differ. Bare primitive-ref occurrences are also surfaced as warnings for review.

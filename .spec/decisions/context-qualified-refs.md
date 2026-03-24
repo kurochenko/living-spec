@@ -19,12 +19,12 @@ When multiple bounded contexts define the same concept (e.g., billing has "statu
 
 **Decision:**
 
-Context becomes an optional namespace in the qualified ref: `context.prefix:slug`. The dot before the type prefix separates context from the rest. Since type prefixes are a fixed set (`term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`), parsing is unambiguous — everything before the dot is context.
+Context becomes the namespace in the qualified ref for contextual primitives: `context.prefix:slug`. The dot before the type prefix separates context from the rest. Since type prefixes are a fixed set (`term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`), parsing is unambiguous — everything before the dot is context.
 
 Key properties:
 
 - **Uniqueness** changes from (type, slug) to (type, context, slug). `billing.term:status` and `recipe.term:status` can coexist.
-- **Disambiguation rule**: if a slug is unique within its type across all contexts, the short form `prefix:slug` works. If ambiguous (same type+slug in multiple contexts), the CLI errors and requires the full `context.prefix:slug` form.
+- **Reference rule**: shared primitives with no context use the short form `prefix:slug`. Any primitive with a non-empty `context` must use the full `context.prefix:slug` form.
 - **Storage is flat**: no subfolders. When context is present, the filename becomes `{context}.{slug}.md` (e.g., `.spec/terms/billing.status.md`). When there is no context, files stay as `{slug}.md`.
 - **Frontmatter**: the `context` field remains the source of truth. The filename and qualified ref mirror it.
 - **Shared/core concepts**: a primitive with no context is available to all contexts. Examples: `term:money`, `term:timestamp`.
@@ -59,5 +59,5 @@ These conventions are not enforced by the CLI today but can be checked by `lore 
 - `lore add` must accept `-c`/`--context` to set the context (it already does for frontmatter; now it also affects the filename).
 - INDEX.md entries use the full form when context is present: `billing.term:status (billing) → ...`
 - `lore list --context <name>` filters by context.
-- Single-context projects pay zero additional cost — no context prefix needed anywhere.
+- Single-context projects still use short refs only for shared primitives; contextual primitives always carry their context prefix.
 - The graph now contains enough information to detect cross-context coupling smells.

@@ -74,13 +74,15 @@ export const findPrimitiveById = (projectRoot: string, ref: string): Primitive |
     return candidates.find((p) => p.frontmatter.context === qualified.context) ?? null
   }
 
-  if (candidates.length > 1) {
+  const sharedCandidates = candidates.filter((p) => !p.frontmatter.context)
+
+  if (sharedCandidates.length > 1) {
     const contexts = candidates.map((p) => p.frontmatter.context).filter(Boolean).join(', ')
     console.error(`Ambiguous ref '${ref}' — multiple matches exist: ${contexts}. Use full form context.prefix:slug.`)
     process.exit(1)
   }
 
-  return candidates[0]
+  return sharedCandidates[0] ?? null
 }
 
 export const addLink = (primitive: Primitive, edge: EdgeType, target: string): void => {
@@ -169,6 +171,26 @@ export const rewriteLinkTargets = (projectRoot: string, oldRef: string, newRef: 
       }
     }
     writeFileSync(p.filePath, matter.stringify(content, data))
+  }
+  return count
+}
+
+const WRAPPER_REF_RE = /\[\[((?:[a-z]+\.)?[a-z]+:[a-z-]+)\]\]/g
+
+export const rewriteProseWrappers = (projectRoot: string, oldRef: string, newRef: string): number => {
+  const all = getAllPrimitives(projectRoot)
+  let count = 0
+  for (const p of all) {
+    const matches = [...p.body.matchAll(WRAPPER_REF_RE)].map((m) => m[1])
+    const filtered = matches.filter((ref) => ref === oldRef)
+    if (filtered.length === 0) continue
+    const raw = readFileSync(p.filePath, 'utf-8')
+    const { data, content } = matter(raw)
+    const newContent = content.replaceAll(`[[${oldRef}]]`, `[[${newRef}]]`)
+    if (newContent !== content) {
+      writeFileSync(p.filePath, matter.stringify(newContent, data))
+      count += filtered.length
+    }
   }
   return count
 }

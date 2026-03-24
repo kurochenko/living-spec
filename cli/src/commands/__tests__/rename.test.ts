@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import matter from 'gray-matter'
 import { createTempDir, removeTempDir, run } from '../../lib/test-helpers.js'
@@ -75,5 +75,26 @@ describe('flow:rename-primitive', () => {
     const r = run(['rename', 'alpha', 'omega'], dir)
     assert.equal(r.exitCode, 1)
     assert.ok(r.stderr.includes('qualified form'))
+  })
+
+  it('updates prose wrappers when renaming', () => {
+    const flowPath = join(dir, '.spec', 'flows', 'do-stuff.md')
+    const { data, content } = matter(readFileSync(flowPath, 'utf-8'))
+    const newContent = content.replace('A flow.', 'A flow that uses [[term:alpha]].')
+    writeFileSync(flowPath, matter.stringify(newContent, data))
+
+    const r = run(['rename', 'term:alpha', 'omega'], dir)
+    assert.equal(r.exitCode, 0)
+    assert.ok(r.stdout.includes('prose wrapper'))
+
+    const updated = readFileSync(flowPath, 'utf-8')
+    assert.ok(updated.includes('[[term:omega]]'))
+    assert.ok(!updated.includes('[[term:alpha]]'))
+  })
+
+  it('reports zero prose wrappers when none exist', () => {
+    const r = run(['rename', 'term:alpha', 'omega'], dir)
+    assert.equal(r.exitCode, 0)
+    assert.ok(!r.stdout.includes('prose wrapper'))
   })
 })
