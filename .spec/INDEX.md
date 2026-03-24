@@ -16,13 +16,14 @@ Rebuilt automatically by the lore CLI on every write command.
 
 ## Invariants
 
-- inv:single-spec-per-project (lore) → constrains: term:spec-root
-- inv:unique-primitive-id (lore) → constrains: term:primitive; depends-on: term:bounded-context
-- inv:valid-edge-types (lore) → constrains: term:primitive
+- lore.inv:primitive-refs-wrapped (lore) → constrains: term:primitive
+- lore.inv:single-spec-per-project (lore) → constrains: term:spec-root
+- lore.inv:unique-primitive-id (lore) → constrains: term:primitive; depends-on: term:bounded-context
+- lore.inv:valid-edge-types (lore) → constrains: term:primitive
 
 ## Rules
 
-<!-- No rules defined yet. -->
+- lore.rule:link-prose-consistency (lore) → constrains: term:primitive; depends-on: inv:primitive-refs-wrapped
 
 ## Events
 
@@ -37,6 +38,7 @@ Rebuilt automatically by the lore CLI on every write command.
 - flow:init-spec (lore) → depends-on: term:spec-root, term:primitive-type, lore.term:context-overview
 - flow:link-primitives (lore) → depends-on: term:primitive, inv:valid-edge-types, dec:index-rebuild-on-write
 - flow:list-primitives (lore) → depends-on: term:primitive, term:primitive-type
+- lore.flow:migrate-wrappers (lore) → depends-on: term:primitive, term:index, inv:primitive-refs-wrapped, rule:link-prose-consistency
 - flow:reindex (lore) → depends-on: term:index, dec:index-rebuild-on-write
 - flow:rename-primitive (lore) → depends-on: term:primitive, inv:unique-primitive-id, dec:index-rebuild-on-write
 - flow:rm-primitive (lore) → depends-on: term:primitive, dec:index-rebuild-on-write
@@ -68,6 +70,7 @@ Rebuilt automatically by the lore CLI on every write command.
 - feat:cli-init (lore) → includes: term:spec-root, lore.term:context-overview, term:primitive, term:primitive-type, term:index, inv:single-spec-per-project, flow:init-spec, dec:primitives-inside-spec, dec:auto-detect-spec-root
 - feat:cli-link (lore) → includes: term:primitive, term:index, inv:valid-edge-types, flow:link-primitives, flow:unlink-primitives, dec:index-rebuild-on-write
 - feat:cli-list (lore) → includes: term:primitive, term:primitive-type, flow:list-primitives
+- lore.feat:cli-migrate (lore) → includes: term:primitive, term:index, flow:migrate-wrappers, inv:primitive-refs-wrapped, rule:link-prose-consistency
 - feat:cli-reindex (lore) → includes: term:index, flow:reindex, dec:index-rebuild-on-write
 - feat:cli-rename (lore) → includes: term:primitive, term:index, inv:unique-primitive-id, flow:rename-primitive, dec:index-rebuild-on-write
 - feat:cli-rm (lore) → includes: term:primitive, term:index, flow:rm-primitive, dec:index-rebuild-on-write
