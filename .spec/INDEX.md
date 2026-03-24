@@ -7,6 +7,7 @@ Rebuilt automatically by the lore CLI on every write command.
 
 ## Terms
 
+- term:bounded-context (lore) → depends-on: term:primitive
 - term:index (lore) → depends-on: term:primitive
 - term:primitive-type (lore) → no links
 - term:primitive (lore) → includes: term:primitive-type
@@ -15,7 +16,7 @@ Rebuilt automatically by the lore CLI on every write command.
 ## Invariants
 
 - inv:single-spec-per-project (lore) → constrains: term:spec-root
-- inv:unique-primitive-id (lore) → constrains: term:primitive
+- inv:unique-primitive-id (lore) → constrains: term:primitive; depends-on: term:bounded-context
 - inv:valid-edge-types (lore) → constrains: term:primitive
 
 ## Rules
@@ -48,6 +49,7 @@ Rebuilt automatically by the lore CLI on every write command.
 
 - dec:auto-detect-spec-root (lore) → depends-on: term:spec-root
 - dec:bidirectional-subgraph-traversal (lore) → depends-on: term:index, term:primitive
+- dec:context-qualified-refs (lore) → depends-on: term:bounded-context, term:primitive, inv:unique-primitive-id
 - dec:index-rebuild-on-write (lore) → depends-on: term:index
 - dec:prefix-as-type-shorthand (lore) → depends-on: term:primitive-type
 - dec:primitives-inside-spec (lore) → depends-on: term:spec-root
