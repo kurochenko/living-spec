@@ -47,7 +47,7 @@ Six typed, directional relationships. Declared in the `links` section of each fi
 
 A named domain boundary that scopes the meaning of primitives. Every file carries a `context` field in frontmatter. Context is not a primitive type — it has no file of its own.
 
-When multiple contexts define the same concept (e.g., billing and food recipe both have a "status" term), context becomes part of the identity. The qualified ref becomes `context.prefix:slug` (e.g., `billing.term:status`). If a slug is unique within its type across all contexts, the short form `prefix:slug` still works.
+When a primitive has a context, that context becomes part of the identity. Shared primitives with no context use `prefix:slug`. Contextual primitives use `context.prefix:slug` (e.g., `billing.term:status`).
 
 A primitive with no context is a **shared concept** available to all contexts (e.g., `term:money`, `term:timestamp`).
 
@@ -76,14 +76,6 @@ When the graph reveals cross-context coupling, these patterns guide the fix:
 
 5. **Smell Detection** — the graph reveals structural problems. High cross-context `depends-on` density between two contexts suggests they may be one context or are missing a shared kernel. Same-slug-different-context pairs without `maps-to` edges suggest accidental duplication. A context with zero cross-context edges is either truly independent or missing integration points.
 
-### Context Overviews
-
-Each bounded context may also have an optional overview file at `.spec/contexts/<context>.md`.
-
-Context overviews are not primitives. They do not get qualified ids, do not participate in typed edges, and do not appear in `.spec/INDEX.md`. They exist to capture the high-level narrative that does not fit cleanly into a single Feature, Flow, or Term: the context's purpose, its responsibilities, what it does not own, and the important boundaries it maintains.
-
-The `context` field on primitive frontmatter remains the source of truth for context membership. A context overview may curate important `[[...]]` references to primitives in that context, but it must not duplicate the full membership list by hand.
-
 ---
 
 ## File Format
@@ -106,27 +98,6 @@ tags: [optional, grouping, tags]
 Prose body goes here. Free-form markdown.
 ```
 
-Context overview files use a lighter format:
-
-```yaml
----
-name: Human Readable Context Name
-tags: [optional, grouping, tags]
----
-
-**Purpose:**
-
-**Owns:**
-
-**Does Not Own:**
-
-**Key Concepts:**
-
-**Key Flows:**
-
-**Boundaries:**
-```
-
 ### Deprecation
 
 There is no status lifecycle. A primitive file exists or it doesn't. If it exists, it's active.
@@ -138,10 +109,10 @@ Do not delete primitive files. Deprecate them instead. Deleting breaks link refe
 ### Naming conventions
 
 - **id** (slug): kebab-case, unique within its (type, context) pair. E.g., `ltv`, `loan-approved`, `max-residential-ltv`
-- **qualified id**: `prefix:slug` or `context.prefix:slug`. Each type has a short prefix: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Short form (`prefix:slug`) works when slug is unique within its type across all contexts. Full form (`context.prefix:slug`) required when ambiguous. E.g., `term:ltv`, `billing.term:status`
+- **qualified id**: `prefix:slug` or `context.prefix:slug`. Each type has a short prefix: `term`, `inv`, `rule`, `evt`, `flow`, `con`, `dec`, `feat`. Shared primitives with no context use `prefix:slug`. Contextual primitives must use `context.prefix:slug`. E.g., `term:ltv`, `billing.term:status`
 - **type input**: CLI commands that accept a type accept both the full name (`feature`) and the prefix (`feat`). Frontmatter always stores the full name — prefix resolution is input-only.
 - **filename**: `{slug}.md` inside the type folder, or `{context}.{slug}.md` when context is present. E.g., `.spec/terms/ltv.md`, `.spec/terms/billing.status.md`
-- **target** in links: the qualified id. Use the short form when unambiguous, full form when needed. E.g., `target: term:ltv`, `target: billing.term:status`
+- **target** in links: the qualified id. Shared primitives use the short form; contextual primitives use the context-qualified form. E.g., `target: term:ltv`, `target: billing.term:status`
 
 ---
 
@@ -250,15 +221,13 @@ The `lore` CLI manages the spec. All write commands automatically rebuild `.spec
 
 `lore show <ref> --related` — display the primitive plus its connected subgraph (outbound and inbound)
 
-`lore context show <name>` — display `.spec/contexts/<name>.md` and the primitives currently assigned to that context
-
 `lore list` — list all primitives
 
 `lore list --type <type>` — filter by type (accepts full name or prefix, e.g. `feature` or `feat`)
 
 `lore list --context <name>` — filter by bounded context
 
-`lore check <ref>` — walk the dependency graph from any primitive, report dead refs and deprecated refs
+`lore check <ref>` — walk the dependency graph from any primitive, report dead refs, deprecated refs, and prose/frontmatter consistency errors
 
 **Writing:**
 
@@ -278,7 +247,7 @@ The `lore` CLI manages the spec. All write commands automatically rebuild `.spec
 
 `lore reindex` — rebuild INDEX.md from disk (use after manual file edits)
 
-`lore context init <name> -n "Human Readable Name"` — create `.spec/contexts/<name>.md` from the context overview template
+`lore migrate [--confirm <version>]` — apply pending spec-format migrations and generate review guides for manual migrations
 
 **Scaffolding:**
 
@@ -300,8 +269,6 @@ Three common ways to use the CLI:
 
 The file `.spec/INDEX.md` is an auto-maintained flat list of all primitives and their links. It exists so that a single file read gives you the full graph topology without opening every file. It is rebuilt automatically by the lore CLI on every write command.
 
-Context overview files are intentionally excluded from the index because they are narrative entry points, not graph nodes.
-
 ---
 
 ## Principles
@@ -310,6 +277,6 @@ Context overview files are intentionally excluded from the index because they ar
 2. **Minimal but complete.** Don't define what you don't need yet. But what you define must be complete enough to implement against without guessing.
 3. **The spec grows through use.** Don't populate it proactively. Let implementation pressure reveal what's needed.
 4. **Invariants over comments.** If a rule must always hold, put it in an Invariant file — not in a code comment. Code comments get stale. The spec is the source of truth.
-5. **One qualified id, one file, one meaning.** No ambiguity. IDs are unique per (type, context), qualified with a prefix and optional context namespace (`term:ltv`, `billing.term:status`). If two contexts use the same word differently, they are two distinct primitives — use `maps-to` only when they represent projections of the same real-world concept.
+5. **One qualified id, one file, one meaning.** No ambiguity. IDs are unique per (type, context). Shared primitives use `prefix:slug`; contextual primitives use `context.prefix:slug` (`term:ltv`, `billing.term:status`). If two contexts use the same word differently, they are two distinct primitives — use `maps-to` only when they represent projections of the same real-world concept.
 6. **The graph is the value.** Prose definitions are necessary but not sufficient. The links between primitives are what enable impact analysis, completeness checking, and gap detection.
 7. **Exists means active.** No status lifecycle. If a file is in the spec, it's live. If it's no longer relevant, mark it `deprecated: true`. That's the only flag.

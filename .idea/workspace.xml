@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f772d803-6e08-4de9-aa03-125e7d02112e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.spec/VERSION" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/features/cli-migrate.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/flows/migrate-wrappers.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/flows/run-migrations.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/invariants/primitive-refs-wrapped.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/rules/link-prose-consistency.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/rules/migration-required.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/terms/automatic-migration.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/terms/manual-migration.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.spec/terms/migration.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/src/commands/__tests__/check-wrapper.test.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/src/commands/__tests__/migrate.test.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/src/commands/migrate.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/src/lib/migrations.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/src/lib/prose-links.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cli/src/lib/require-with-migration.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/commands/__tests__/init.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cli/src/commands/__tests__/init.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/commands/init.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cli/src/commands/init.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cli/src/index.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "kurochenko"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:kurochenko/living-spec.git",
+    "accountId": "82b5fd83-4c96-4e53-9b5c-1a661ff20340"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3BcqECilRIA0CXQg3NmbpFinaqh" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="openDirectoriesWithSingleClick" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "feat/primitive-linking-rebased",
+    "javascript.preferred.runtime.type.id": "node",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/andrej/projects/personal/knowledge_base/Projects Knowledge base/living-spec",
+    "nodejs_package_manager_path": "bun",
+    "ts.external.directory.path": "/Users/andrej/projects/personal/knowledge_base/Projects Knowledge base/living-spec/cli/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f772d803-6e08-4de9-aa03-125e7d02112e" name="Changes" comment="" />
+      <created>1774798592810</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1774798592810</updated>
+      <workItem from="1774798593988" duration="1478000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
