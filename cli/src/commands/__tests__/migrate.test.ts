@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { createTempDir, removeTempDir, run } from '../../lib/test-helpers.js'
+import { specContent } from '../../lib/seed/spec.js'
+import { templateContents } from '../../lib/seed/templates.js'
 
 let dir: string
 
@@ -64,6 +66,26 @@ describe('lore migrate', () => {
     assert.equal(r.exitCode, 0)
     const guide = readFileSync(join(dir, '.spec', '.migrate-0.2.0-guide.md'), 'utf-8')
     assert.ok(guide.includes('frontmatter link does not resolve to a primitive: term:ghost'))
+  })
+
+  it('manual migration refreshes SPEC.md and templates from seed before writing the guide', () => {
+    run(['init'], dir)
+    writeFileSync(join(dir, '.spec', 'SPEC.md'), '# Old spec\n')
+    writeFileSync(join(dir, '.spec', 'templates', 'term.md'), 'old template\n')
+    writeFileSync(join(dir, '.spec', 'VERSION'), '0.1.0\n')
+
+    const r = run(['migrate'], dir)
+    assert.equal(r.exitCode, 0)
+
+    assert.equal(readFileSync(join(dir, '.spec', 'SPEC.md'), 'utf-8'), specContent)
+    assert.equal(
+      readFileSync(join(dir, '.spec', 'templates', 'term.md'), 'utf-8'),
+      templateContents.term
+    )
+
+    const guide = readFileSync(join(dir, '.spec', '.migrate-0.2.0-guide.md'), 'utf-8')
+    assert.ok(guide.includes('Refreshed `.spec/SPEC.md` from the current seed'))
+    assert.ok(guide.includes('Refreshed `.spec/templates/*.md` from the current seed'))
   })
 
   it('manual migration confirm advances version even after guide generation', () => {
