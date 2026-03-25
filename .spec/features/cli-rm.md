@@ -2,20 +2,21 @@
 type: feature
 name: CLI Remove
 id: cli-rm
-context: lore
 links:
   - edge: includes
-    target: term:primitive
+    target: 'term:primitive'
   - edge: includes
-    target: term:index
+    target: 'term:index'
   - edge: includes
-    target: flow:rm-primitive
+    target: 'flow:rm-primitive'
   - edge: includes
-    target: dec:index-rebuild-on-write
-tags: [cli, v0.2]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Summary:** The `lore rm <prefix:slug>` command. Deletes a primitive file, checks for dangling references, and rebuilds INDEX.md.
+**Summary:** The `lore rm <prefix:slug>` command. Deletes a [[term:primitive]] file, follows [[flow:rm-primitive]], checks for dangling references, and rebuilds [[term:index]] under [[dec:index-rebuild-on-write]].
 
 **Acceptance criteria:**
 - `lore rm term:foo` deletes `.spec/terms/foo.md` and rebuilds INDEX.md

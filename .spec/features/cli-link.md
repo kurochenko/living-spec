@@ -2,24 +2,25 @@
 type: feature
 name: CLI Link
 id: cli-link
-context: lore
 links:
   - edge: includes
-    target: term:primitive
+    target: 'term:primitive'
   - edge: includes
-    target: term:index
+    target: 'term:index'
   - edge: includes
-    target: inv:valid-edge-types
+    target: 'inv:valid-edge-types'
   - edge: includes
-    target: flow:link-primitives
+    target: 'flow:link-primitives'
   - edge: includes
-    target: flow:unlink-primitives
+    target: 'flow:unlink-primitives'
   - edge: includes
-    target: dec:index-rebuild-on-write
-tags: [cli, v0.2]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Summary:** The `lore link` and `lore unlink` commands. Adds or removes typed edges between primitives, validates edge type constraints, and rebuilds INDEX.md.
+**Summary:** The `lore link` and `lore unlink` commands. Add or remove typed edges between [[term:primitive]]s, enforce [[inv:valid-edge-types]], delegate to [[flow:link-primitives]] and [[flow:unlink-primitives]], and rebuild [[term:index]] under [[dec:index-rebuild-on-write]].
 
 **Acceptance criteria:**
 - `lore link term:foo depends-on term:bar` adds a link entry to foo's frontmatter

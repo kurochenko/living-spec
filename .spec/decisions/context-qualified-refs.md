@@ -2,20 +2,20 @@
 type: decision
 name: Context-Qualified Refs
 id: context-qualified-refs
-context: lore
 links:
   - edge: depends-on
-    target: term:bounded-context
+    target: 'term:bounded-context'
   - edge: depends-on
-    target: term:primitive
+    target: 'term:primitive'
   - edge: depends-on
-    target: inv:unique-primitive-id
-tags: [core]
+    target: 'inv:unique-primitive-id'
+tags:
+  - core
 ---
 
 **Context:**
 
-When multiple bounded contexts define the same concept (e.g., billing has "status" and recipe has "status"), the current `prefix:slug` qualified ref is ambiguous. There is no structural way to disambiguate — context is metadata in frontmatter but not part of the identity.
+When multiple [[term:bounded-context]]s define the same concept (e.g., billing has "status" and recipe has "status"), the current `prefix:slug` qualified ref is ambiguous. There is no structural way to disambiguate — context is metadata in frontmatter but not part of [[term:primitive]] identity.
 
 **Decision:**
 
@@ -23,7 +23,7 @@ Context becomes the namespace in the qualified ref for contextual primitives: `c
 
 Key properties:
 
-- **Uniqueness** changes from (type, slug) to (type, context, slug). `billing.term:status` and `recipe.term:status` can coexist.
+- **Uniqueness** changes from (type, slug) to (type, context, slug) under [[inv:unique-primitive-id]]. `billing.term:status` and `recipe.term:status` can coexist.
 - **Reference rule**: shared primitives with no context use the short form `prefix:slug`. Any primitive with a non-empty `context` must use the full `context.prefix:slug` form.
 - **Storage is flat**: no subfolders. When context is present, the filename becomes `{context}.{slug}.md` (e.g., `.spec/terms/billing.status.md`). When there is no context, files stay as `{slug}.md`.
 - **Frontmatter**: the `context` field remains the source of truth. The filename and qualified ref mirror it.

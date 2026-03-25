@@ -2,14 +2,14 @@
 type: term
 name: Bounded Context
 id: bounded-context
-context: lore
 links:
   - edge: depends-on
-    target: term:primitive
-tags: [core]
+    target: 'term:primitive'
+tags:
+  - core
 ---
 
-A named domain boundary that scopes the meaning of all primitives within it. Two primitives with the same type and slug but different contexts are distinct concepts — e.g., `billing.term:status` (paid/unpaid/overdue) and `recipe.term:status` (draft/published/archived) are unrelated.
+A named domain boundary that scopes the meaning of all [[term:primitive]]s within it. Two primitives with the same type and slug but different contexts are distinct concepts — e.g., `billing.term:status` (paid/unpaid/overdue) and `recipe.term:status` (draft/published/archived) are unrelated.
 
 Context is not a primitive type — it has no file of its own. It exists as a `context` field in every primitive's frontmatter and as the namespace prefix for contextual refs (`context.prefix:slug`).
 

@@ -163,6 +163,22 @@ Then:
 3. Wait for user confirmation before writing to the spec
 4. Write the primitive file after confirmation
 
+### Writing linked prose
+
+When writing or editing primitive files:
+1. Treat frontmatter `links` as the canonical graph
+2. For every linked primitive, add a matching `[[...]]` link in the body prose
+3. Put that `[[...]]` link where the concept is actually explained, referenced, or used in the existing prose
+4. Prefer wrapping the existing word or phrase in place instead of appending cross-reference boilerplate
+5. Do not satisfy link coverage with sections like `Related primitives`, `See also`, or synthetic sentences such as `This flow depends on ...`
+6. Only add a new sentence when the linked concept is genuinely missing from the explanation and that addition improves clarity
+7. When showing literal wrapper syntax as an example, escape it as `\[\[term:example\]\]` so it is not treated as a live link
+
+After manual spec edits:
+1. Rebuild `INDEX.md`
+2. Run `lore check` on the affected primitive or feature
+3. Fix prose/frontmatter drift by linking the real prose, not by adding boilerplate
+
 ### When starting with an existing project (brownfield)
 
 If you're plugging this spec into a project that already has code:

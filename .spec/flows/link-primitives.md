@@ -2,23 +2,23 @@
 type: flow
 name: Link Primitives
 id: link-primitives
-context: lore
 links:
   - edge: depends-on
-    target: term:primitive
+    target: 'term:primitive'
   - edge: depends-on
-    target: inv:valid-edge-types
+    target: 'inv:valid-edge-types'
   - edge: depends-on
-    target: dec:index-rebuild-on-write
-tags: [cli]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
 ---
 
 **Trigger:** User runs `lore link <source> <edge> <target>`
 
 **Inputs:**
-- `<source>` (required) — qualified ref of the source primitive (prefix:slug)
+- `<source>` (required) — qualified ref of the source [[term:primitive]] (prefix:slug)
 - `<edge>` (required) — one of the six edge types
-- `<target>` (required) — qualified ref of the target primitive (prefix:slug)
+- `<target>` (required) — qualified ref of the target [[term:primitive]] (prefix:slug)
 
 **Steps:**
 1. Parse source ref → exit with error if not qualified form
@@ -27,11 +27,11 @@ tags: [cli]
 4. Find project root (walk up for `.spec/SPEC.md`)
 5. Look up source primitive → exit with error if not found
 6. Look up target primitive → exit with error if not found
-7. Validate edge is allowed for source type → target type pair → exit with error if not
+7. Validate the edge under [[inv:valid-edge-types]] for the source type → target type pair → exit with error if not
 8. Check source's links array for duplicate (same edge + same target) → exit with error if duplicate
 9. Append `{ edge, target: qualifiedTargetRef }` to source's frontmatter links array
 10. Write source file back
-11. Rebuild INDEX.md
+11. Rebuild INDEX.md according to [[dec:index-rebuild-on-write]]
 12. Print confirmation: `Linked source → edge → target`
 
 **Outputs:**

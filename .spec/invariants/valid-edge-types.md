@@ -2,14 +2,14 @@
 type: invariant
 name: Valid Edge Types
 id: valid-edge-types
-context: lore
 links:
   - edge: constrains
-    target: term:primitive
-tags: [core]
+    target: 'term:primitive'
+tags:
+  - core
 ---
 
-**Condition:** Every link added between two primitives must use an edge type that is valid for the source→target type pair. The allowed combinations are:
+**Condition:** Every link added between two [[term:primitive]]s must use an edge type that is valid for the source→target type pair. The allowed combinations are:
 
 - **depends-on**: any → any
 - **constrains**: invariant|rule → term|flow

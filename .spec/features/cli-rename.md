@@ -2,22 +2,23 @@
 type: feature
 name: CLI Rename
 id: cli-rename
-context: lore
 links:
   - edge: includes
-    target: term:primitive
+    target: 'term:primitive'
   - edge: includes
-    target: term:index
+    target: 'term:index'
   - edge: includes
-    target: inv:unique-primitive-id
+    target: 'inv:unique-primitive-id'
   - edge: includes
-    target: flow:rename-primitive
+    target: 'flow:rename-primitive'
   - edge: includes
-    target: dec:index-rebuild-on-write
-tags: [cli, v0.2]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Summary:** The `lore rename <old-ref> <new-slug>` command. Renames a primitive's slug, updates its file, rewrites all inbound link targets, and rebuilds INDEX.md.
+**Summary:** The `lore rename <old-ref> <new-slug>` command. Renames a [[term:primitive]]'s slug, preserves [[inv:unique-primitive-id]], follows [[flow:rename-primitive]], rewrites inbound link targets, and rebuilds [[term:index]] under [[dec:index-rebuild-on-write]].
 
 **Acceptance criteria:**
 - `lore rename term:old new` renames file, updates id, rewrites inbound refs

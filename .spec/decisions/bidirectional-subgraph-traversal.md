@@ -2,18 +2,18 @@
 type: decision
 name: Bidirectional Subgraph Traversal
 id: bidirectional-subgraph-traversal
-context: lore
 links:
   - edge: depends-on
-    target: term:index
+    target: 'term:index'
   - edge: depends-on
-    target: term:primitive
-tags: [cli]
+    target: 'term:primitive'
+tags:
+  - cli
 ---
 
 **Context:** `lore show --related` needs to determine which primitives are connected to the target. The graph has directed edges (e.g., `depends-on`, `includes`), so a decision is needed on traversal direction.
 
-**Decision:** BFS follows both outgoing links (targets of the primitive's links) and incoming links (any primitive that links to this one). This gives the complete connected component regardless of edge direction.
+**Decision:** BFS follows both outgoing links (targets of the [[term:primitive]]'s links) and incoming links (any primitive that links to this one). This gives the complete connected component regardless of edge direction, using [[term:index]] to discover inbound edges efficiently.
 
 **Alternatives considered:**
 - Outgoing only — misses important context (e.g., a feature that `includes` the target would not appear)

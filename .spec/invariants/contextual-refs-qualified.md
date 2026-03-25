@@ -2,16 +2,17 @@
 type: invariant
 name: Contextual Refs Qualified
 id: contextual-refs-qualified
-context: lore
 links:
   - edge: constrains
-    target: term:primitive
+    target: 'term:primitive'
   - edge: depends-on
-    target: term:bounded-context
-tags: [core, v0.2]
+    target: 'term:bounded-context'
+tags:
+  - core
+  - v0.2
 ---
 
-**Condition:** A primitive with a non-empty `context` must always be referenced using the context-qualified form `context.prefix:slug`. The short form `prefix:slug` is reserved for shared primitives with no context.
+**Condition:** A [[term:primitive]] with a non-empty `context` must always be referenced using the context-qualified form `context.prefix:slug`. The short form `prefix:slug` is reserved for shared primitives with no context in a [[term:bounded-context]].
 
 **Examples:**
 - Valid: `term:money`, `term:timestamp`, `billing.term:status`

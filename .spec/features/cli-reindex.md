@@ -2,18 +2,19 @@
 type: feature
 name: CLI Reindex
 id: cli-reindex
-context: lore
 links:
   - edge: includes
-    target: term:index
+    target: 'term:index'
   - edge: includes
-    target: flow:reindex
+    target: 'flow:reindex'
   - edge: includes
-    target: dec:index-rebuild-on-write
-tags: [cli, v0.2]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Summary:** The `lore reindex` command. Rebuilds INDEX.md from the current state of all primitive files on disk.
+**Summary:** The `lore reindex` command. Rebuilds [[term:index]] from the current state of all primitive files on disk through [[flow:reindex]] and follows [[dec:index-rebuild-on-write]].
 
 **Acceptance criteria:**
 - `lore reindex` rebuilds INDEX.md
