@@ -1,8 +1,11 @@
 import { readFileSync, writeFileSync, existsSync } from 'fs'
 import { join } from 'path'
 import { specDir } from './spec-root.js'
+import { PRIMITIVE_TYPES } from './constants.js'
 import { getAllPrimitives } from './primitives.js'
 import { qualifyId } from './validation.js'
+import { specContent } from './seed/spec.js'
+import { templateContents } from './seed/templates.js'
 import {
   createPrimitiveCatalog,
   validateProseLinkConsistency,
@@ -160,7 +163,18 @@ const formatMigrationIssue = (
   return `- wrapped ref does not resolve to a primitive: ${ref}`
 }
 
+const refreshSeedManagedSpecFiles = (projectRoot: string): void => {
+  const specRoot = specDir(projectRoot)
+  writeFileSync(join(specRoot, 'SPEC.md'), specContent)
+
+  for (const type of PRIMITIVE_TYPES) {
+    writeFileSync(join(specRoot, 'templates', `${type}.md`), templateContents[type])
+  }
+}
+
 const buildWrapperMigrationGuide = (projectRoot: string): ManualMigrationArtifact => {
+  refreshSeedManagedSpecFiles(projectRoot)
+
   const all = getAllPrimitives(projectRoot)
   const catalog = createPrimitiveCatalog(all)
   const validation = validateProseLinkConsistency(all, catalog)
@@ -210,6 +224,11 @@ ${primitivesList}
 ## Review Findings
 
 ${findings || 'No blocking inconsistencies were detected by the CLI.'}
+
+## Automatic Updates Applied By The CLI
+
+- Refreshed \`.spec/SPEC.md\` from the current seed
+- Refreshed \`.spec/templates/*.md\` from the current seed
 
 ## How to Make Changes
 

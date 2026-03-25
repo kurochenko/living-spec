@@ -23,6 +23,7 @@ tags:
 **Acceptance criteria:**
 - `lore migrate` with no pending migrations → exit 0 with "No pending migrations."
 - Pending automatic migrations are applied directly by the CLI in version order
+- A migration may refresh framework-owned files such as `.spec/SPEC.md` and `.spec/templates/*.md` automatically before asking the reviewer for manual follow-up
 - Pending manual migrations generate a review artifact and stop until explicitly confirmed
 - `lore migrate --confirm <version>` advances `.spec/VERSION` only for the next pending manual migration with the same target version
 - `lore migrate --confirm <version>` does not verify correctness; it marks the manual migration as accepted

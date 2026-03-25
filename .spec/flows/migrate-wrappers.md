@@ -21,26 +21,30 @@ tags:
 **Purpose:** Generate the review artifact for the v0.2.0 [[term:primitive]]-linking migration that introduces the wrapper syntax from [[inv:primitive-refs-wrapped]] and the consistency rule from [[rule:link-prose-consistency]].
 
 **Steps:**
-1. Scan all `.spec/**/*.md` files
-2. For each file, parse frontmatter `links:` → collect all target refs to other [[term:primitive]]s
-3. For each file's prose body:
+1. Refresh framework-owned files from the current CLI seed:
+   a. Overwrite `.spec/SPEC.md`
+   b. Overwrite `.spec/templates/*.md`
+2. Scan primitive files only (`.spec/{terms,invariants,rules,events,flows,contracts,decisions,features}/*.md`)
+3. For each primitive file, parse frontmatter `links:` → collect all target refs to other [[term:primitive]]s
+4. For each primitive file's prose body:
    a. Find all existing `\[\[...\]\]` wrappers → extract target IDs
    b. Resolve each wrapped ref using the same rules as the CLI (`prefix:slug` or `context.prefix:slug`)
    c. Find all bare primitive ID mentions (`prefix:slug` or `context.prefix:slug`) that occur outside `\[\[...\]\]`
-4. Group findings:
+5. Group findings:
    a. Files with frontmatter links missing `\[\[...\]\]` prose mentions
    b. Files with `\[\[...\]\]` wrappers not linked in frontmatter
    c. Files with frontmatter links that do not resolve to a primitive
    d. Files with invalid or context-missing wrapped refs
    e. Probable bare refs that should be reviewed
-5. Output a **migration guide** for LLM containing:
+6. Output a **migration guide** for LLM containing:
    - List of all primitives with their IDs and human-readable names
    - For each file needing changes: the current inconsistencies and suggested `\[\[...\]\]` insertions or frontmatter updates
+   - A note that `.spec/SPEC.md` and `.spec/templates/*.md` were refreshed automatically by the CLI
    - Instructions for LLM on how to make changes
    - Bare-ref review guidance (treat as suspicious, not as a blocking proof by itself)
    - A reminder that a reviewer must run `lore migrate --confirm 0.2.0` after accepting the manual migration
-6. [[flow:run-migrations]] stops after writing `.spec/.migrate-0.2.0-guide.md`
-7. Reviewer makes any desired spec edits and then runs `lore migrate --confirm 0.2.0` to accept the migration and advance `.spec/VERSION`
+7. [[flow:run-migrations]] stops after writing `.spec/.migrate-0.2.0-guide.md`
+8. Reviewer makes any desired primitive-file edits and then runs `lore migrate --confirm 0.2.0` to accept the migration and advance `.spec/VERSION`
 
 **Outputs:**
 - Review artifact content for `.spec/.migrate-{version}-guide.md`
