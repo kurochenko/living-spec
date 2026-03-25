@@ -2,20 +2,21 @@
 type: feature
 name: CLI Check
 id: cli-check
-context: lore
 links:
   - edge: includes
-    target: term:primitive
+    target: 'term:primitive'
   - edge: includes
-    target: term:index
+    target: 'term:index'
   - edge: includes
-    target: flow:check-completeness
+    target: 'flow:check-completeness'
   - edge: includes
-    target: dec:bidirectional-subgraph-traversal
-tags: [cli, v0.2]
+    target: 'dec:bidirectional-subgraph-traversal'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Summary:** The `lore check <prefix:slug>` command. Walks a primitive's dependency graph and reports dead refs, deprecated refs, and prose/frontmatter consistency issues.
+**Summary:** The `lore check <prefix:slug>` command. Walks a [[term:primitive]] dependency graph through [[flow:check-completeness]], uses [[term:index]] to traverse related nodes, follows [[dec:bidirectional-subgraph-traversal]], and reports dead refs, deprecated refs, and prose/frontmatter consistency issues.
 
 **Acceptance criteria:**
 - `lore check feat:my-feat` with all refs resolved → exit 0, prints complete message with count
@@ -25,9 +26,9 @@ tags: [cli, v0.2]
 - Works on any primitive, not just features
 - Unqualified ref → exit with error
 - Nonexistent primitive → exit with error
-- Frontmatter link missing a matching `[[wrapped-ref]]` in prose → exit 1
-- `[[wrapped-ref]]` in prose missing a matching frontmatter link → exit 1
-- Invalid `[[wrapped-ref]]` (no such primitive, or ambiguous short ref) → exit 1
+- Frontmatter link missing a matching `\[\[wrapped-ref\]\]` in prose → exit 1
+- `\[\[wrapped-ref\]\]` in prose missing a matching frontmatter link → exit 1
+- Invalid `\[\[wrapped-ref\]\]` (no such primitive, or ambiguous short ref) → exit 1
 - Frontmatter link target that does not resolve to a primitive → exit 1
 - Bare primitive ref occurrence in prose → warning with file:line as a probable unlinked or unwrapped mention
 

@@ -2,14 +2,15 @@
 type: term
 name: Automatic Migration
 id: automatic-migration
-context: lore
 links:
   - edge: is-a
-    target: term:migration
-tags: [core, v0.2]
+    target: 'term:migration'
+tags:
+  - core
+  - v0.2
 ---
 
-**Definition:** A migration that the CLI executes without external intervention. All required changes are made directly to files by the CLI itself.
+**Definition:** A [[term:migration]] that the CLI executes without external intervention. All required changes are made directly to files by the CLI itself.
 
 **Characteristics:**
 - No guide generation needed
@@ -22,4 +23,3 @@ tags: [core, v0.2]
 - Updating frontmatter schema (adding/removing fields)
 - Fixing broken link references mechanically
 
-**See also:** `migration`, `manual-migration`

@@ -2,22 +2,23 @@
 type: feature
 name: CLI Migrate
 id: cli-migrate
-context: lore
 links:
   - edge: includes
-    target: term:migration
+    target: 'term:migration'
   - edge: includes
-    target: term:automatic-migration
+    target: 'term:automatic-migration'
   - edge: includes
-    target: term:manual-migration
+    target: 'term:manual-migration'
   - edge: includes
-    target: rule:migration-required
+    target: 'rule:migration-required'
   - edge: includes
-    target: flow:run-migrations
-tags: [cli, v0.2]
+    target: 'flow:run-migrations'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Summary:** The `lore migrate` command. Applies pending spec-format migrations in version order and supports explicit confirmation for manual migrations.
+**Summary:** The `lore migrate` command. Applies pending [[term:migration]]s in version order, distinguishes between [[term:automatic-migration]] and [[term:manual-migration]], respects [[rule:migration-required]], and executes the behavior described by [[flow:run-migrations]].
 
 **Acceptance criteria:**
 - `lore migrate` with no pending migrations → exit 0 with "No pending migrations."

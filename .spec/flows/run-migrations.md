@@ -2,34 +2,35 @@
 type: flow
 name: Run Migrations
 id: run-migrations
-context: lore
 links:
   - edge: depends-on
-    target: term:migration
+    target: 'term:migration'
   - edge: depends-on
-    target: term:automatic-migration
+    target: 'term:automatic-migration'
   - edge: depends-on
-    target: term:manual-migration
+    target: 'term:manual-migration'
   - edge: depends-on
-    target: rule:migration-required
-tags: [cli, v0.2]
+    target: 'rule:migration-required'
+tags:
+  - cli
+  - v0.2
 ---
 
-**Trigger:** User runs `lore migrate` or `lore migrate --confirm <version>`
+**Trigger:** User runs `lore migrate` or `lore migrate --confirm <version>` after [[rule:migration-required]] blocks another command
 
 **Steps:**
 1. Find project root and read `.spec/VERSION`
-2. Compare the current version against the CLI's ordered migration list
+2. Compare the current version against the CLI's ordered [[term:migration]] list
 3. If no migrations are pending: print "No pending migrations." and exit 0
-4. Iterate pending migrations in ascending target-version order. Migrations are never skipped.
-5. If the next pending migration is automatic:
+4. Iterate pending [[term:migration]]s in ascending target-version order. Migrations are never skipped.
+5. If the next pending migration is [[term:automatic-migration]]:
    a. Apply it directly
    b. Write its target version to `.spec/VERSION`
    c. Continue to the next pending migration
-6. If the next pending migration is manual and no `--confirm <version>` was provided:
+6. If the next pending migration is [[term:manual-migration]] and no `--confirm <version>` was provided:
    a. Generate that migration's review artifact or instructions
    b. Stop without advancing `.spec/VERSION`
-7. If the next pending migration is manual and `--confirm <version>` was provided:
+7. If the next pending migration is [[term:manual-migration]] and `--confirm <version>` was provided:
    a. If `<version>` does not equal that next pending manual migration's target version: exit with error
    b. Accept the manual migration without re-verifying correctness
    c. Write that target version to `.spec/VERSION`
@@ -39,7 +40,7 @@ tags: [cli, v0.2]
 
 **Outputs:**
 - Updated `.spec/VERSION` after each completed migration
-- Review artifact or instructions for the first pending manual migration that was not confirmed
+- Review artifact or instructions for the first pending [[term:manual-migration]] that was not confirmed
 - Exit code 0
 
 **Error paths:**

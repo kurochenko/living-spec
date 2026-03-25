@@ -2,14 +2,15 @@
 type: rule
 name: Migration Required
 id: migration-required
-context: lore
 links:
   - edge: constrains
-    target: term:migration
-tags: [core, v0.2]
+    target: 'term:migration'
+tags:
+  - core
+  - v0.2
 ---
 
-**Policy:** Before any `lore` command executes (except `lore migrate` itself), the CLI checks if the spec requires migration.
+**Policy:** Before any `lore` command executes (except `lore migrate` itself), the CLI checks if the spec requires a pending [[term:migration]].
 
 **Check logic:**
 1. Read `.spec/VERSION` from spec root
@@ -22,6 +23,5 @@ Spec at v{spec_version}, but v{target_version} required by migration '{target_ve
 Run 'lore migrate' to apply pending migrations.
 ```
 
-**Note:** `lore migrate` itself does not perform this check — it is the migration command and must be allowed to run even when migrations are pending.
+**Note:** `lore migrate` itself does not perform this check because it is the command that resolves pending [[term:migration]]s.
 
-**See also:** `migration`, `automatic-migration`, `manual-migration`

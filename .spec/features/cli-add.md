@@ -2,24 +2,25 @@
 type: feature
 name: CLI Add
 id: cli-add
-context: lore
 links:
   - edge: includes
-    target: term:primitive
+    target: 'term:primitive'
   - edge: includes
-    target: term:primitive-type
+    target: 'term:primitive-type'
   - edge: includes
-    target: term:index
+    target: 'term:index'
   - edge: includes
-    target: inv:unique-primitive-id
+    target: 'inv:unique-primitive-id'
   - edge: includes
-    target: flow:add-primitive
+    target: 'flow:add-primitive'
   - edge: includes
-    target: dec:index-rebuild-on-write
-tags: [cli, v0.1]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
+  - v0.1
 ---
 
-**Summary:** The `lore add <type> <slug>` command. Creates a new primitive file, validates type and slug, enforces per-type uniqueness, requires name and body, and rebuilds INDEX.md.
+**Summary:** The `lore add <type> <slug>` command. Creates a new [[term:primitive]], validates its [[term:primitive-type]] and slug, enforces [[inv:unique-primitive-id]], follows [[flow:add-primitive]], and rebuilds [[term:index]] under [[dec:index-rebuild-on-write]].
 
 **Acceptance criteria:**
 - `lore add term my-term -n "My Term" -b "Definition here"` creates `.spec/terms/my-term.md` with correct frontmatter and body

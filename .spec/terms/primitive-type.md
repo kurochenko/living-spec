@@ -2,7 +2,6 @@
 type: term
 name: Primitive Type
 id: primitive-type
-context: lore
 links: []
 tags: [core]
 ---
