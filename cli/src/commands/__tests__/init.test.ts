@@ -17,6 +17,7 @@ describe('inv:single-spec-per-project', () => {
     assert.equal(r.exitCode, 0)
     assert.ok(existsSync(join(dir, '.spec', 'SPEC.md')))
     assert.ok(existsSync(join(dir, '.spec', 'INDEX.md')))
+    assert.ok(existsSync(join(dir, '.spec', 'contexts')))
   })
 
   it('init where .spec/ exists is a noop', () => {
@@ -33,16 +34,17 @@ describe('inv:single-spec-per-project', () => {
 // --- flow:init-spec ---
 
 describe('flow:init-spec', () => {
-  it('creates all 8 type folders and templates/ inside .spec/', () => {
+  it('creates all 8 type folders plus context scaffolding inside .spec/', () => {
     run(['init'], dir)
     const specDir = join(dir, '.spec')
     const expectedFolders = [
-      'templates', 'terms', 'invariants', 'rules', 'events',
+      'templates', 'contexts', 'terms', 'invariants', 'rules', 'events',
       'flows', 'contracts', 'decisions', 'features',
     ]
     for (const folder of expectedFolders) {
       assert.ok(existsSync(join(specDir, folder)), `Missing folder: ${folder}`)
     }
+    assert.ok(existsSync(join(specDir, 'templates', 'context.md')))
   })
 
   it('SPEC.md and INDEX.md have correct headers', () => {

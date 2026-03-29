@@ -14,6 +14,8 @@ Living Spec gives you a small vocabulary of **primitives** — Term, Invariant, 
 
 Inspired by Domain-Driven Design, but flattened for LLM readability. Instead of Ubiquitous Language buried in prose, you get a traversable graph where every concept is explicit and linked.
 
+Each bounded context can also have an optional overview file in `.spec/contexts/` for the high-level narrative: what the context is for, what it owns, and where its boundaries are. Those overview files stay outside the graph so membership still comes from primitive `context` fields.
+
 **Term** captures what something *is* (e.g., `term:ltv` — a customer's lifetime value). **Invariant** captures what must *always* hold (`inv:ltv-never-negative`). **Rule** captures configurable policy. **Flow** shows how things proceed. **Feature** is the entry point. Edges connect them all.
 
 ### Design before you build
@@ -78,6 +80,7 @@ The spec starts empty and grows as you build. No upfront population needed.
 ├── SPEC.md              # Meta-model + LLM instructions (the seed file)
 ├── INDEX.md             # Flat graph topology for quick lookup
 ├── templates/           # One template per primitive type
+├── contexts/            # Optional bounded-context overview files
 ├── terms/               # Domain concepts
 ├── invariants/          # Rules that must never break
 ├── rules/               # Configurable business policies
@@ -96,7 +99,7 @@ The spec starts empty and grows as you build. No upfront population needed.
 
 **Edges:** depends-on, constrains, includes, maps-to, emits, triggers
 
-Each primitive is a markdown file with YAML frontmatter. The frontmatter carries the type, id, links to other primitives, and context. The body is free prose. Links use qualified IDs with type prefixes (`term:ltv`, `flow:originate-loan`, `dec:use-postgres`).
+Each primitive is a markdown file with YAML frontmatter. The frontmatter carries the type, id, links to other primitives, and context. The body is free prose. Links use qualified IDs with type prefixes (`term:ltv`, `flow:originate-loan`, `dec:use-postgres`). Optional context overview files live in `.spec/contexts/<context>.md` and document the narrative around a context without becoming graph nodes themselves.
 
 The LLM reads the spec before coding, traverses the graph to check it has everything it needs, and stops to ask when something is missing. Gaps get filled as you build — no upfront population needed.
 

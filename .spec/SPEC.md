@@ -76,6 +76,14 @@ When the graph reveals cross-context coupling, these patterns guide the fix:
 
 5. **Smell Detection** — the graph reveals structural problems. High cross-context `depends-on` density between two contexts suggests they may be one context or are missing a shared kernel. Same-slug-different-context pairs without `maps-to` edges suggest accidental duplication. A context with zero cross-context edges is either truly independent or missing integration points.
 
+### Context Overviews
+
+Each bounded context may also have an optional overview file at `.spec/contexts/<context>.md`.
+
+Context overviews are not primitives. They do not get qualified ids, do not participate in typed edges, and do not appear in `.spec/INDEX.md`. They exist to capture the high-level narrative that does not fit cleanly into a single Feature, Flow, or Term: the context's purpose, its responsibilities, what it does not own, and the important boundaries it maintains.
+
+The `context` field on primitive frontmatter remains the source of truth for context membership. A context overview may curate important `[[...]]` references to primitives in that context, but it must not duplicate the full membership list by hand.
+
 ---
 
 ## File Format
@@ -96,6 +104,27 @@ tags: [optional, grouping, tags]
 ---
 
 Prose body goes here. Free-form markdown.
+```
+
+Context overview files use a lighter format:
+
+```yaml
+---
+name: Human Readable Context Name
+tags: [optional, grouping, tags]
+---
+
+**Purpose:**
+
+**Owns:**
+
+**Does Not Own:**
+
+**Key Concepts:**
+
+**Key Flows:**
+
+**Boundaries:**
 ```
 
 ### Deprecation
@@ -221,6 +250,8 @@ The `lore` CLI manages the spec. All write commands automatically rebuild `.spec
 
 `lore show <ref> --related` — display the primitive plus its connected subgraph (outbound and inbound)
 
+`lore context show <name>` — display `.spec/contexts/<name>.md` and the primitives currently assigned to that context
+
 `lore list` — list all primitives
 
 `lore list --type <type>` — filter by type (accepts full name or prefix, e.g. `feature` or `feat`)
@@ -247,6 +278,8 @@ The `lore` CLI manages the spec. All write commands automatically rebuild `.spec
 
 `lore reindex` — rebuild INDEX.md from disk (use after manual file edits)
 
+`lore context init <name> -n "Human Readable Name"` — create `.spec/contexts/<name>.md` from the context overview template
+
 **Scaffolding:**
 
 `lore init [--dir <path>]` — create `.spec/` in the target directory
@@ -266,6 +299,8 @@ Three common ways to use the CLI:
 ## Index
 
 The file `.spec/INDEX.md` is an auto-maintained flat list of all primitives and their links. It exists so that a single file read gives you the full graph topology without opening every file. It is rebuilt automatically by the lore CLI on every write command.
+
+Context overview files are intentionally excluded from the index because they are narrative entry points, not graph nodes.
 
 ---
 

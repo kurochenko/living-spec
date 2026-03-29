@@ -77,6 +77,8 @@ If a feature was implemented before the spec was written (a violation), recover 
 ```
 lore init [--dir <path>]                              # create .spec/ in target directory
 lore add <type> <slug> -n <name> [-c <context>]     # create a new primitive from template
+lore context init <name> -n <title>                 # create .spec/contexts/<name>.md
+lore context show <name>                            # show a context overview and derived membership
 lore show <ref> [--related]                          # read a primitive or its subgraph
 lore link <source> <edge> <target>                   # add a typed edge between two primitives
 lore unlink <source> <edge> <target>
