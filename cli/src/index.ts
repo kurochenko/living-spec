@@ -13,11 +13,12 @@ import { deprecateCommand } from './commands/deprecate.js'
 import { checkCommand } from './commands/check.js'
 import { renameCommand } from './commands/rename.js'
 import { contextCommand } from './commands/context.js'
+import { migrateCommand } from './commands/migrate.js'
 
 const program = new Command()
   .name('lore')
   .description('CLI for managing a living-spec knowledge base')
-  .version('0.1.0')
+  .version('0.3.0')
 
 program.addCommand(initCommand)
 program.addCommand(addCommand)
@@ -31,5 +32,6 @@ program.addCommand(deprecateCommand)
 program.addCommand(checkCommand)
 program.addCommand(renameCommand)
 program.addCommand(contextCommand)
+program.addCommand(migrateCommand)
 
 program.parse()
