@@ -1,10 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { join, resolve } from 'path'
 import { Command } from 'commander'
-import { SPEC_DIR, SPEC_MARKER, TYPE_TO_FOLDER, PRIMITIVE_TYPES } from '../lib/constants.js'
+import { CONTEXTS_DIR, CONTEXT_TEMPLATE, SPEC_DIR, SPEC_MARKER, TYPE_TO_FOLDER, PRIMITIVE_TYPES } from '../lib/constants.js'
 import { specContent } from '../lib/seed/spec.js'
 import { indexContent } from '../lib/seed/index-seed.js'
-import { templateContents } from '../lib/seed/templates.js'
+import { contextTemplateContent, templateContents } from '../lib/seed/templates.js'
 
 export const initCommand = new Command('init')
   .description('Initialize a living-spec in the current directory')
@@ -19,8 +19,10 @@ export const initCommand = new Command('init')
 
     const spec = join(projectRoot, SPEC_DIR)
 
-    // create .spec/ with templates dir
+    // create .spec/ with templates and context overview dirs
     mkdirSync(join(spec, 'templates'), { recursive: true })
+    mkdirSync(join(spec, CONTEXTS_DIR), { recursive: true })
+    writeFileSync(join(spec, CONTEXTS_DIR, '.gitkeep'), '')
 
     // create primitive folders inside .spec/
     for (const type of PRIMITIVE_TYPES) {
@@ -37,6 +39,7 @@ export const initCommand = new Command('init')
     for (const type of PRIMITIVE_TYPES) {
       writeFileSync(join(spec, 'templates', `${type}.md`), templateContents[type])
     }
+    writeFileSync(join(spec, 'templates', CONTEXT_TEMPLATE), contextTemplateContent)
 
     console.log(`Initialized .spec/ at ${projectRoot}`)
     console.log('')

@@ -8,6 +8,7 @@ Rebuilt automatically by the lore CLI on every write command.
 ## Terms
 
 - term:bounded-context (lore) → depends-on: term:primitive
+- term:context-overview (lore) → depends-on: term:bounded-context, term:primitive, term:spec-root, term:index
 - term:index (lore) → depends-on: term:primitive
 - term:primitive-type (lore) → no links
 - term:primitive (lore) → includes: term:primitive-type
@@ -32,12 +33,14 @@ Rebuilt automatically by the lore CLI on every write command.
 - flow:add-primitive (lore) → depends-on: term:primitive, term:primitive-type, inv:unique-primitive-id, dec:index-rebuild-on-write
 - flow:check-completeness (lore) → depends-on: term:primitive, term:index, dec:bidirectional-subgraph-traversal
 - flow:deprecate-primitive (lore) → depends-on: term:primitive, dec:index-rebuild-on-write
-- flow:init-spec (lore) → depends-on: term:spec-root, term:primitive-type
+- flow:init-context-overview (lore) → depends-on: lore.term:context-overview, term:spec-root
+- flow:init-spec (lore) → depends-on: term:spec-root, term:primitive-type, lore.term:context-overview
 - flow:link-primitives (lore) → depends-on: term:primitive, inv:valid-edge-types, dec:index-rebuild-on-write
 - flow:list-primitives (lore) → depends-on: term:primitive, term:primitive-type
 - flow:reindex (lore) → depends-on: term:index, dec:index-rebuild-on-write
 - flow:rename-primitive (lore) → depends-on: term:primitive, inv:unique-primitive-id, dec:index-rebuild-on-write
 - flow:rm-primitive (lore) → depends-on: term:primitive, dec:index-rebuild-on-write
+- flow:show-context-overview (lore) → depends-on: lore.term:context-overview, term:primitive, term:primitive-type
 - flow:show-primitive (lore) → depends-on: term:primitive, term:index, dec:bidirectional-subgraph-traversal
 - flow:unlink-primitives (lore) → depends-on: term:primitive, dec:index-rebuild-on-write
 
@@ -50,6 +53,7 @@ Rebuilt automatically by the lore CLI on every write command.
 - dec:auto-detect-spec-root (lore) → depends-on: term:spec-root
 - dec:bidirectional-subgraph-traversal (lore) → depends-on: term:index, term:primitive
 - dec:context-qualified-refs (lore) → depends-on: term:bounded-context, term:primitive, inv:unique-primitive-id
+- dec:context-overviews-outside-graph (lore) → depends-on: term:bounded-context, lore.term:context-overview, term:index
 - dec:index-rebuild-on-write (lore) → depends-on: term:index
 - dec:prefix-as-type-shorthand (lore) → depends-on: term:primitive-type
 - dec:primitives-inside-spec (lore) → depends-on: term:spec-root
@@ -59,8 +63,9 @@ Rebuilt automatically by the lore CLI on every write command.
 
 - feat:cli-add (lore) → includes: term:primitive, term:primitive-type, term:index, inv:unique-primitive-id, flow:add-primitive, dec:index-rebuild-on-write
 - feat:cli-check (lore) → includes: term:primitive, term:index, flow:check-completeness, dec:bidirectional-subgraph-traversal
+- feat:cli-context (lore) → includes: term:bounded-context, lore.term:context-overview, term:primitive, term:primitive-type, term:spec-root, lore.flow:init-context-overview, lore.flow:show-context-overview, lore.dec:context-overviews-outside-graph
 - feat:cli-deprecate (lore) → includes: term:primitive, flow:deprecate-primitive, dec:index-rebuild-on-write
-- feat:cli-init (lore) → includes: term:spec-root, term:primitive, term:primitive-type, term:index, inv:single-spec-per-project, flow:init-spec, dec:primitives-inside-spec, dec:auto-detect-spec-root
+- feat:cli-init (lore) → includes: term:spec-root, lore.term:context-overview, term:primitive, term:primitive-type, term:index, inv:single-spec-per-project, flow:init-spec, dec:primitives-inside-spec, dec:auto-detect-spec-root
 - feat:cli-link (lore) → includes: term:primitive, term:index, inv:valid-edge-types, flow:link-primitives, flow:unlink-primitives, dec:index-rebuild-on-write
 - feat:cli-list (lore) → includes: term:primitive, term:primitive-type, flow:list-primitives
 - feat:cli-reindex (lore) → includes: term:index, flow:reindex, dec:index-rebuild-on-write

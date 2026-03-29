@@ -16,3 +16,5 @@ Context is not a primitive type — it has no file of its own. It exists as a `c
 Contexts are implicit: they are created when the first primitive uses one. There is no upfront declaration. `lore list --context <name>` filters by context.
 
 A primitive with no context (or a default/empty context) is a **shared concept** — available to all contexts. Examples: `term:money`, `term:timestamp`. These live at `.spec/{type}s/{slug}.md` with no context prefix in the filename or ref.
+
+When a context needs a high-level narrative entry point, it may also have a [[lore.term:context-overview]] file at `.spec/contexts/<context>.md`.

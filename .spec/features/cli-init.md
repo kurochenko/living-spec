@@ -7,6 +7,8 @@ links:
   - edge: includes
     target: term:spec-root
   - edge: includes
+    target: lore.term:context-overview
+  - edge: includes
     target: term:primitive
   - edge: includes
     target: term:primitive-type
@@ -23,14 +25,16 @@ links:
 tags: [cli, v0.1]
 ---
 
-**Summary:** The `lore init` command. Creates `.spec/` with SPEC.md, INDEX.md, templates, and primitive subfolders in the target directory.
+**Summary:** The `lore init` command. Creates `.spec/` with SPEC.md, INDEX.md, templates, the context overview scaffold, and primitive subfolders in the target directory.
 
 **Acceptance criteria:**
 - `lore init` creates complete `.spec/` structure in cwd
 - `lore init --dir <path>` creates it in the specified directory
 - Running init where `.spec/` exists prints `.spec/ already exists at {path}` and does nothing
 - All eight template files are created
+- The context overview template file is created at `.spec/templates/context.md`
 - All eight primitive folders are created inside `.spec/`
+- The `.spec/contexts/` folder is created for optional [[lore.term:context-overview]] files
 - After scaffolding, prints a ready-to-paste prompt snippet for agent integration (the user copies it into their LLM tool's config file)
 
 **Open questions:**

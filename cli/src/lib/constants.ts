@@ -82,3 +82,5 @@ export const isValidEdge = (edge: EdgeType, sourceType: PrimitiveType, targetTyp
 
 export const SPEC_DIR = '.spec'
 export const SPEC_MARKER = '.spec/SPEC.md'
+export const CONTEXTS_DIR = 'contexts'
+export const CONTEXT_TEMPLATE = 'context.md'
