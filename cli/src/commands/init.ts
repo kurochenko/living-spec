@@ -36,7 +36,7 @@ export const initCommand = new Command('init')
     writeFileSync(join(spec, 'INDEX.md'), indexContent)
 
     // write VERSION file (spec format version, not CLI version)
-    writeFileSync(join(spec, 'VERSION'), '0.2.0\n')
+    writeFileSync(join(spec, 'VERSION'), '0.3.0\n')
 
     // write templates
     for (const type of PRIMITIVE_TYPES) {

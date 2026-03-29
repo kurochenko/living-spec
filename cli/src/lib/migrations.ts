@@ -258,4 +258,32 @@ export const MIGRATIONS: Migration[] = [
       return buildWrapperMigrationGuide(projectRoot)
     },
   },
+  {
+    targetVersion: '0.3.0',
+    type: 'automatic',
+    async up(projectRoot) {
+      const { mkdirSync, writeFileSync } = await import('fs')
+      const { join } = await import('path')
+      const { specDir } = await import('./spec-root.js')
+      const { specContent } = await import('./seed/spec.js')
+      const { contextTemplateContent } = await import('./seed/templates.js')
+      const { CONTEXTS_DIR, CONTEXT_TEMPLATE } = await import('./constants.js')
+
+      // Update SPEC.md with context overview documentation
+      writeFileSync(join(specDir(projectRoot), 'SPEC.md'), specContent)
+
+      // Create contexts/ folder if missing
+      const contextsPath = join(specDir(projectRoot), CONTEXTS_DIR)
+      if (!existsSync(contextsPath)) {
+        mkdirSync(contextsPath, { recursive: true })
+        writeFileSync(join(contextsPath, '.gitkeep'), '')
+      }
+
+      // Add context template if missing
+      const contextTemplatePath = join(specDir(projectRoot), 'templates', CONTEXT_TEMPLATE)
+      if (!existsSync(contextTemplatePath)) {
+        writeFileSync(contextTemplatePath, contextTemplateContent)
+      }
+    },
+  },
 ]
