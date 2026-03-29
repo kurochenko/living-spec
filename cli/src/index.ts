@@ -13,6 +13,7 @@ import { deprecateCommand } from './commands/deprecate.js'
 import { checkCommand } from './commands/check.js'
 import { renameCommand } from './commands/rename.js'
 import { contextCommand } from './commands/context.js'
+import { migrateCommand } from './commands/migrate.js'
 
 const program = new Command()
   .name('lore')
@@ -31,5 +32,6 @@ program.addCommand(deprecateCommand)
 program.addCommand(checkCommand)
 program.addCommand(renameCommand)
 program.addCommand(contextCommand)
+program.addCommand(migrateCommand)
 
 program.parse()

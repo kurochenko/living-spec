@@ -18,6 +18,8 @@ describe('inv:single-spec-per-project', () => {
     assert.ok(existsSync(join(dir, '.spec', 'SPEC.md')))
     assert.ok(existsSync(join(dir, '.spec', 'INDEX.md')))
     assert.ok(existsSync(join(dir, '.spec', 'contexts')))
+    assert.ok(existsSync(join(dir, '.spec', 'VERSION')))
+    assert.ok(readFileSync(join(dir, '.spec', 'VERSION'), 'utf-8').includes('0.3.0'))
   })
 
   it('init where .spec/ exists is a noop', () => {

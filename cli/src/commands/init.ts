@@ -5,6 +5,7 @@ import { CONTEXTS_DIR, CONTEXT_TEMPLATE, SPEC_DIR, SPEC_MARKER, TYPE_TO_FOLDER, 
 import { specContent } from '../lib/seed/spec.js'
 import { indexContent } from '../lib/seed/index-seed.js'
 import { contextTemplateContent, templateContents } from '../lib/seed/templates.js'
+import { versionContent } from '../lib/seed/version.js'
 
 export const initCommand = new Command('init')
   .description('Initialize a living-spec in the current directory')
@@ -34,6 +35,7 @@ export const initCommand = new Command('init')
     // write seed files
     writeFileSync(join(spec, 'SPEC.md'), specContent)
     writeFileSync(join(spec, 'INDEX.md'), indexContent)
+    writeFileSync(join(spec, 'VERSION'), versionContent)
 
     // write templates
     for (const type of PRIMITIVE_TYPES) {

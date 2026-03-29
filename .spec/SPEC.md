@@ -302,6 +302,8 @@ The file `.spec/INDEX.md` is an auto-maintained flat list of all primitives and 
 
 Context overview files are intentionally excluded from the index because they are narrative entry points, not graph nodes.
 
+The file `.spec/VERSION` tracks the spec format version. This enables the `lore migrate` command to upgrade existing specs when the format evolves. New specs are created at the current CLI version. Running `lore migrate` updates seed files (SPEC.md, templates) and creates missing infrastructure (like `contexts/` folder) to match the current format version.
+
 ---
 
 ## Principles
