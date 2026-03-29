@@ -2,16 +2,16 @@
 type: decision
 name: Auto-detect Spec Root
 id: auto-detect-spec-root
-context: lore
 links:
   - edge: depends-on
-    target: term:spec-root
-tags: [cli]
+    target: 'term:spec-root'
+tags:
+  - cli
 ---
 
 **Context:** The CLI needs to find the `.spec/` folder without explicit configuration.
 
-**Decision:** Walk up from cwd looking for `.spec/SPEC.md`. The first match is the spec root.
+**Decision:** Walk up from cwd looking for `.spec/SPEC.md`. The first match is the [[term:spec-root]].
 
 **Alternatives considered:**
 - `--root` flag on every command — too verbose for frequent use

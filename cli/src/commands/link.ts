@@ -1,6 +1,6 @@
 import { Command } from 'commander'
 import { isValidEdge } from '../lib/constants.js'
-import { requireProjectRoot } from '../lib/spec-root.js'
+import { requireProjectRoot } from '../lib/require-with-migration.js'
 import { findPrimitiveById, addLink } from '../lib/primitives.js'
 import { rebuildIndex } from '../lib/index-builder.js'
 import { requireQualifiedRef, validateEdgeType } from '../lib/validation.js'

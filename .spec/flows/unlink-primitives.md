@@ -2,21 +2,21 @@
 type: flow
 name: Unlink Primitives
 id: unlink-primitives
-context: lore
 links:
   - edge: depends-on
-    target: term:primitive
+    target: 'term:primitive'
   - edge: depends-on
-    target: dec:index-rebuild-on-write
-tags: [cli]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
 ---
 
 **Trigger:** User runs `lore unlink <source> <edge> <target>`
 
 **Inputs:**
-- `<source>` (required) — qualified ref of the source primitive (prefix:slug)
+- `<source>` (required) — qualified ref of the source [[term:primitive]] (prefix:slug)
 - `<edge>` (required) — one of the six edge types
-- `<target>` (required) — qualified ref of the target primitive (prefix:slug)
+- `<target>` (required) — qualified ref of the target [[term:primitive]] (prefix:slug)
 
 **Steps:**
 1. Parse source ref → exit with error if not qualified form
@@ -28,7 +28,7 @@ tags: [cli]
 7. Find matching link in source's links array (same edge + same target) → exit with error if not found
 8. Remove the matching link entry from source's frontmatter links array
 9. Write source file back
-10. Rebuild INDEX.md
+10. Rebuild INDEX.md according to [[dec:index-rebuild-on-write]]
 11. Print confirmation: `Unlinked source → edge → target`
 
 **Outputs:**

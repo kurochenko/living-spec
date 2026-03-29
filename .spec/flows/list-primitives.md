@@ -2,22 +2,22 @@
 type: flow
 name: List Primitives
 id: list-primitives
-context: lore
 links:
   - edge: depends-on
-    target: term:primitive
+    target: 'term:primitive'
   - edge: depends-on
-    target: term:primitive-type
-tags: [cli]
+    target: 'term:primitive-type'
+tags:
+  - cli
 ---
 
 **Trigger:** User runs `lore list [--type <type>]`
 
 **Steps:**
 1. Find project root (walk up for `.spec/SPEC.md`)
-2. Load all primitives
-3. If `--type` is provided, filter to that type → exit with error if invalid type
-4. Print one line per primitive: `prefix:slug  name`
+2. Load all [[term:primitive]]s
+3. If `--type` is provided, filter to that [[term:primitive-type]] → exit with error if invalid type
+4. Print one line per [[term:primitive]]: `prefix:slug  name`
 5. If no primitives match, print `(none)`
 
 **Inputs:**

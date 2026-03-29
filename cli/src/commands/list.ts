@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { requireProjectRoot } from '../lib/spec-root.js'
+import { requireProjectRoot } from '../lib/require-with-migration.js'
 import { getAllPrimitives } from '../lib/primitives.js'
 import { validateType, qualifyId } from '../lib/validation.js'
 

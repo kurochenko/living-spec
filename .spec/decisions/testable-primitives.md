@@ -2,14 +2,14 @@
 type: decision
 name: Testable Primitives
 id: testable-primitives
-context: lore
 links:
   - edge: depends-on
-    target: term:primitive-type
-tags: [core]
+    target: 'term:primitive-type'
+tags:
+  - core
 ---
 
-**Context:** Not all primitive types produce testable behavior. Tests should be derived from the spec, not invented separately, but only some types have assertions to verify.
+**Context:** Not all [[term:primitive-type]]s produce testable behavior. Tests should be derived from the spec, not invented separately, but only some types have assertions to verify.
 
 **Decision:** Four types are testable, four are not.
 

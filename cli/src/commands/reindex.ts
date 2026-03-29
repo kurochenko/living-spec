@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { requireProjectRoot } from '../lib/spec-root.js'
+import { requireProjectRoot } from '../lib/require-with-migration.js'
 import { rebuildIndex } from '../lib/index-builder.js'
 
 export const reindexCommand = new Command('reindex')

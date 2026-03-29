@@ -1,8 +1,9 @@
 import { Command } from 'commander'
-import { requireProjectRoot } from '../lib/spec-root.js'
+import { requireProjectRoot } from '../lib/require-with-migration.js'
 import { getAllPrimitives, findPrimitiveById, type Primitive } from '../lib/primitives.js'
 import { qualifyId, parseQualifiedRef } from '../lib/validation.js'
 import { type PrimitiveType } from '../lib/constants.js'
+import { createPrimitiveCatalog, resolvePrimitiveRef } from '../lib/prose-links.js'
 
 const formatLinks = (links: Primitive['frontmatter']['links']): string => {
   if (!links || links.length === 0) return '  (none)'
@@ -27,19 +28,14 @@ const collectRelated = (startType: PrimitiveType, startSlug: string, startContex
 
   const keyOf = (p: Primitive) => qualifyId(p.frontmatter.type, p.frontmatter.id, p.frontmatter.context)
 
+  const catalog = createPrimitiveCatalog(primitives)
   const primitivesByKey = new Map(primitives.map((p) => [keyOf(p), p]))
 
   const resolveTarget = (targetRef: string): string | null => {
-    const parsed = parseQualifiedRef(targetRef)
-    if (!parsed) return null
-    if (parsed.context) {
-      const key = qualifyId(parsed.type, parsed.slug, parsed.context)
-      return primitivesByKey.has(key) ? key : null
-    }
-    const matches = primitives.filter((p) => p.frontmatter.type === parsed.type && p.frontmatter.id === parsed.slug)
-    if (matches.length === 1) return keyOf(matches[0])
-    if (matches.length === 0) return null
-    return null
+    const resolution = resolvePrimitiveRef(targetRef, catalog)
+    return resolution.status === 'resolved' && primitivesByKey.has(resolution.qid)
+      ? resolution.qid
+      : null
   }
 
   while (queue.length > 0) {

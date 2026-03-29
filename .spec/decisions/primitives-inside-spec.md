@@ -2,16 +2,16 @@
 type: decision
 name: Primitives Inside Spec
 id: primitives-inside-spec
-context: lore
 links:
   - edge: depends-on
-    target: term:spec-root
-tags: [core]
+    target: 'term:spec-root'
+tags:
+  - core
 ---
 
 **Context:** Primitive folders (terms/, invariants/, etc.) need to live somewhere in the project.
 
-**Decision:** All primitive folders live inside `.spec/`, not at the project root.
+**Decision:** All primitive folders live inside the [[term:spec-root]], not at the project root.
 
 **Alternatives considered:**
 - Primitive folders at project root — adds eight folders to root, clutters the project

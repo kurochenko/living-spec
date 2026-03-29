@@ -2,21 +2,21 @@
 type: flow
 name: Rename Primitive
 id: rename-primitive
-context: lore
 links:
   - edge: depends-on
-    target: term:primitive
+    target: 'term:primitive'
   - edge: depends-on
-    target: inv:unique-primitive-id
+    target: 'inv:unique-primitive-id'
   - edge: depends-on
-    target: dec:index-rebuild-on-write
-tags: [cli]
+    target: 'dec:index-rebuild-on-write'
+tags:
+  - cli
 ---
 
 **Trigger:** User runs `lore rename <old-ref> <new-slug>`
 
 **Inputs:**
-- `<old-ref>` (required) — qualified ref of the primitive to rename (prefix:slug)
+- `<old-ref>` (required) — qualified ref of the [[term:primitive]] to rename (prefix:slug)
 - `<new-slug>` (required) — new kebab-case slug (type stays the same)
 
 **Steps:**
@@ -24,12 +24,12 @@ tags: [cli]
 2. Validate new slug is kebab-case → exit with error if not
 3. Find project root (walk up for `.spec/SPEC.md`)
 4. Look up the old primitive → exit with error if not found
-5. Check that no primitive of the same type already uses the new slug → exit with error if duplicate
+5. Check under [[inv:unique-primitive-id]] that no primitive of the same type already uses the new slug → exit with error if duplicate
 6. Compute old and new qualified refs (e.g., `term:old-slug` → `term:new-slug`)
 7. Update `id` field in frontmatter to the new slug
 8. Rename the file on disk (`old-slug.md` → `new-slug.md`)
 9. Scan all primitives for link targets matching the old qualified ref → rewrite each to the new qualified ref
-10. Rebuild INDEX.md
+10. Rebuild INDEX.md according to [[dec:index-rebuild-on-write]]
 11. Print confirmation: `Renamed old-ref → new-ref. Updated N inbound reference(s).`
 
 **Outputs:**

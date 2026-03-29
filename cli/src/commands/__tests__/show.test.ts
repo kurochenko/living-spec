@@ -66,16 +66,13 @@ describe('flow:show-primitive', () => {
     assert.ok(!r.stdout.includes('Recipe Status'))
   })
 
-  it('ambiguous short ref errors with disambiguation hint', () => {
+  it('shared short ref does not resolve to contextual primitive', () => {
     run(['add', 'term', 'status', '-n', 'Billing Status', '-c', 'billing', '-b', 'Billing status.'], dir)
     run(['add', 'term', 'status', '-n', 'Recipe Status', '-c', 'recipe', '-b', 'Recipe status.'], dir)
 
     const r = run(['show', 'term:status'], dir)
     assert.equal(r.exitCode, 1)
-    assert.ok(r.stderr.includes('Ambiguous'))
-    assert.ok(r.stderr.includes('billing'))
-    assert.ok(r.stderr.includes('recipe'))
-    assert.ok(r.stderr.includes('context.prefix:slug'))
+    assert.ok(r.stderr.includes('not found'))
   })
 
   it('--related traverses context-qualified link targets', () => {
